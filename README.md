@@ -1,9 +1,6 @@
-# ForgeIgniter
-A friendly and easy to use CMS build on Codeigniter
+# ForgeIgniter | CI-2.x
+ForgeIgniter CMS built on CodeIgniter 2.x
 
-# Dev Branch
-This is the latest going-ons with FI, very probably unstable, if you do spot a bug or two please do let us know.
+--
 
-# CI 2 Version
-if you'd like to download the CI2 version
-https://github.com/Forgeigniter/ForgeIgniter-CI-2.x
+For the CI3 version check out: https://github.com/Forgeigniter/ForgeIgniter

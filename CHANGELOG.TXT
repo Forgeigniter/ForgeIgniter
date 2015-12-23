@@ -1,0 +1,191 @@
+# ForgeIgniter CHANGE LOG
+# CodeIgniter 3.x Branch
+--------------------------
+
+## Version v2.0
+
+- ForgeIgniter
+	¬ Updated: Now functions with CI3, a quick summery found below.
+		SQL dump, Mimes, Main Config, All modules class names, db config,
+		error pages, routes & modules routes, root index, 
+
+- CodeIgniter
+	¬ Updated to v3.0.3 http://www.codeigniter.com/user_guide/changelog.html
+
+--------------------
+
+## Version 0.3
+
+- Community
+	¬ Updated: Profile now shows company website {user:company-website}
+	¬ Added: New Tag {user:website}
+	¬ Added: Profile Website (note: New SQL column)
+	¬ Fixed: Profile page now shows correct company info
+
+- CodeIgniter
+	¬ Updated to v2.2.6 (http://www.codeigniter.com/userguide2/changelog.html)
+
+## Version 0.2
+
+- Blogs
+	¬ Update: Reorder Body & Introduction.
+	¬ Update: Author Bio now displays a message if blank.
+	¬ Added: Excerpt preview to Edit and Add Post.
+	¬ Added: New Tags {blog:newer:btn} & {blog:older:btn}.
+	¬ Added: Custom CSS button Class Global Variable.
+	¬ Added: New Tag {post:author-avatar}
+	¬ Fixed: RSS Agent Resource
+
+- Forums
+	¬ Updated: Avatars now have real path.
+	¬ Updated: Stripped out HTML in the controller view
+	¬ Updated: Forum view now actually displays last post
+	¬ Added: New Forum Tags forum:latest-date, forum:latest-user, forum:latest-time
+	¬ Added: New Topic Tags topic:latest-date, topic:latest-user, topic:latest-time
+
+- Markdown ITF Lib
+	¬ Updated: to support 1.5.0
+	
+- ForgeIgniter
+	¬ Updated: Lib time format
+	¬ Updated: Doctypes
+	¬ Updated: Foreign Characters
+	¬ Updated: Allowed file types
+	¬ Updated: User Agents
+	¬ Updated: doctype to 403 files and added missing 403 files.
+	¬ Updated: Information on all files
+	¬ Updated: Error Messages.
+	
+- CodeIgniter
+	¬ Updated to v2.2.2 (http://www.codeigniter.com/userguide2/changelog.html)
+
+--------------------
+
+## Version 0.1
+
+- Admin Dashboard
+	¬ Added: E-mail Setup Check.
+	
+- Pages
+	¬ Fixed: Sub Page button views.
+	
+- Forge
+	¬ Updated to reflect new name.
+	¬ Updated: Modular Extensions - HMVC
+	
+- CodeIgniter
+	¬ Updated to v2.2.1
+
+--------------------
+Updates move officially to ForgeIgniter.
+--------------------
+
+## Version 1.2.0 | CE 1.2.2
+
+- Community
+	¬ Updated: Search function change on query.
+	¬ Added: display how many users there is.
+
+- Shop
+	¬ Added: Rating Images.
+	¬ Fixed: problems with subdomain support.
+	¬ Fixed: On Cat create, if no cats, takes you to blog cat.
+
+- Image Manager
+	¬ Fixed: Close Image not showing in Lightbox.
+	¬ Tweak: Style and display in browser viewer.
+	¬ Fixed: Subdomain Support.
+	
+- File Manager
+	¬ Tweak: Style and display in browser viewer.
+	¬ Fixed: Subdomain Support.
+	
+- Blog
+	¬ Updated: Search function change on query.
+	
+- WIKI
+	¬ Updated: Search function change on query.
+	
+- Events
+	¬ Fixed: Search link display blink
+	¬ Updated: Search function change on query.
+	
+- Halogy
+	¬ HTML 5 is a go ! (Backend updated to HTML5)
+	¬ Tweek: footer font color.
+	¬ added executed time to footer.
+	¬ Fixed: Missing </center> tag.
+	¬ Updated: user agent higher value support.
+	¬ Updated: Session IP now supports max length.
+	¬ Initial documentation started for Hal 1.2 & CE 1.3
+
+--------------------
+
+## Version 1.2.0 | CE 1.2.1
+
+- Markdown ITF Lib
+	¬ Updated to support 1.4.1 (this is also easier to update in the future)
+- Admin Users
+	¬ Fixed: Delete User Groups not functioning...
+- Events
+	¬ Fixed: featured events missing.
+- Gallery
+	¬ Fixed: Image thumbnail not showing.
+- Halogy
+	¬ Sites missing js file.
+	¬ Added: BBcode - now has [color=] & 9 Smiles, yes like :-)
+	
+--------------------
+
+## Version 1.2.0 | CE 1.2.0
+
+- Backend and Frontend subdomain support
+	¬ Too much to list, if request though, can list.
+- WIKI
+	¬  Fixed Errors on pages with versions
+	¬  Fixed Uncategorised pages give errors
+- Admin
+	¬ Fixed Congratulations message not showing correct path
+	¬ Added path to my account in message 'Password change'
+- Events
+	¬ Fixed event:edit tag
+	¬ Fixed cal date link to an actual link.
+
+--------------------
+
+## Version 1.2.0 - CE 1.1.1
+
+- Fixed issue with dates, PHP 5.3+ (Note: now GMT if not set)
+- Admin Theme
+	¬ Added bootstrap.min.css ( Started with installer)
+- Updated Installer
+	¬ Added steps and checks.
+	¬ Added Complete Page.
+	¬ Fixed rare DB Error.
+	¬ No need for manually going to : /halogy/install/
+	¬ Updated dashboard message if install were there.
+
+--------------------	
+	
+## Version 1.2.0 - CE 1.1.0
+
+- Added mySQL DB Setup.
+
+--------------------
+
+## Version 1.2.0 - CE 1.0.2
+
+- Updated CodeIgniter to version 2.2.0
+
+--------------------
+
+## Version 1.2.0 - CE 1.0.1
+
+- Fixed bug with Japanese or Foreign Character on page titles and comments
+- Fixed Error creating new site in multi site manager
+
+--------------------
+
+## Version 1.2.0 - CE 1.0.0
+
+- Updated CodeIgniter to version 2.1.4
