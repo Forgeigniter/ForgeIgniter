@@ -7,10 +7,10 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
-# Dump of table ha_blog_catmap
+# Dump of table FI_blog_catmap
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_blog_catmap` (
+CREATE TABLE FI_blog_catmap (
   `catID` int(11) NOT NULL default '0',
   `postID` int(11) NOT NULL default '0',
   `siteID` int(11) default NULL,
@@ -19,10 +19,10 @@ CREATE TABLE `ha_blog_catmap` (
 
 
 
-# Dump of table ha_blog_cats
+# Dump of table FI_blog_cats
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_blog_cats` (
+CREATE TABLE `FI_blog_cats` (
   `catID` int(11) NOT NULL auto_increment,
   `catName` varchar(100) collate utf8_unicode_ci default NULL,
   `catSafe` varchar(100) collate utf8_unicode_ci default NULL,
@@ -35,10 +35,10 @@ CREATE TABLE `ha_blog_cats` (
 
 
 
-# Dump of table ha_blog_comments
+# Dump of table FI_blog_comments
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_blog_comments` (
+CREATE TABLE `FI_blog_comments` (
   `commentID` int(11) NOT NULL auto_increment,
   `postID` int(11) NOT NULL default '0',
   `dateCreated` timestamp NULL default '0000-00-00 00:00:00',
@@ -54,10 +54,10 @@ CREATE TABLE `ha_blog_comments` (
 
 
 
-# Dump of table ha_blog_posts
+# Dump of table FI_blog_posts
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_blog_posts` (
+CREATE TABLE `FI_blog_posts` (
   `postID` int(11) NOT NULL auto_increment,
   `postTitle` varchar(100) collate utf8_unicode_ci default NULL,
   `dateCreated` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -78,10 +78,10 @@ CREATE TABLE `ha_blog_posts` (
 
 
 
-# Dump of table ha_captcha
+# Dump of table FI_captcha
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_captcha` (
+CREATE TABLE `FI_captcha` (
   `captcha_id` bigint(13) unsigned NOT NULL auto_increment,
   `captcha_time` int(10) unsigned NOT NULL default '0',
   `ip_address` varchar(16) collate utf8_unicode_ci NOT NULL default '0',
@@ -92,10 +92,10 @@ CREATE TABLE `ha_captcha` (
 
 
 
-# Dump of table ha_community_messagemap
+# Dump of table FI_community_messagemap
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_community_messagemap` (
+CREATE TABLE `FI_community_messagemap` (
   `messageID` int(11) NOT NULL default '0',
   `toUserID` int(11) NOT NULL default '0',
   `userID` int(11) NOT NULL default '0',
@@ -108,10 +108,10 @@ CREATE TABLE `ha_community_messagemap` (
 
 
 
-# Dump of table ha_community_messages
+# Dump of table FI_community_messages
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_community_messages` (
+CREATE TABLE `FI_community_messages` (
   `messageID` int(11) NOT NULL auto_increment,
   `dateCreated` timestamp NOT NULL default '0000-00-00 00:00:00',
   `dateModified` timestamp NOT NULL default CURRENT_TIMESTAMP,
@@ -124,10 +124,10 @@ CREATE TABLE `ha_community_messages` (
 
 
 
-# Dump of table ha_ci_sessions
+# Dump of table FI_system_sessions
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_ci_sessions` (
+CREATE TABLE `FI_system_sessions` (
   `id` varchar(40) collate utf8_unicode_ci NOT NULL default '0',
   `ip_address` varchar(45) collate utf8_unicode_ci NOT NULL default '0',
   `timestamp` int(10) unsigned NOT NULL default '0',
@@ -137,10 +137,10 @@ CREATE TABLE `ha_ci_sessions` (
 
 
 
-# Dump of table ha_email_blocks
+# Dump of table FI_email_blocks
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_email_blocks` (
+CREATE TABLE `FI_email_blocks` (
   `blockID` int(11) NOT NULL auto_increment,
   `emailID` int(11) default NULL,
   `blockRef` varchar(50) collate utf8_unicode_ci default NULL,
@@ -152,10 +152,10 @@ CREATE TABLE `ha_email_blocks` (
 
 
 
-# Dump of table ha_email_campaigns
+# Dump of table FI_email_campaigns
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_email_campaigns` (
+CREATE TABLE `FI_email_campaigns` (
   `campaignID` int(11) NOT NULL auto_increment,
   `campaignName` varchar(100) default NULL,
   `dateCreated` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
@@ -165,10 +165,10 @@ CREATE TABLE `ha_email_campaigns` (
 
 
 
-# Dump of table ha_email_deploy
+# Dump of table FI_email_deploy
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_email_deploy` (
+CREATE TABLE `FI_email_deploy` (
   `deployID` int(11) NOT NULL auto_increment,
   `emailID` int(11) NOT NULL default '0',
   `email` varchar(50) NOT NULL default '0',
@@ -181,10 +181,10 @@ CREATE TABLE `ha_email_deploy` (
 
 
 
-# Dump of table ha_email_includes
+# Dump of table FI_email_includes
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_email_includes` (
+CREATE TABLE `FI_email_includes` (
   `includeID` int(11) NOT NULL auto_increment,
   `dateCreated` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `includeRef` varchar(100) default NULL,
@@ -195,10 +195,10 @@ CREATE TABLE `ha_email_includes` (
 
 
 
-# Dump of table ha_email_list_subscribers
+# Dump of table FI_email_list_subscribers
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_email_list_subscribers` (
+CREATE TABLE `FI_email_list_subscribers` (
   `listID` int(11) NOT NULL default '0',
   `email` varchar(50) NOT NULL default '0',
   `name` varchar(100) default NULL,
@@ -208,10 +208,10 @@ CREATE TABLE `ha_email_list_subscribers` (
 
 
 
-# Dump of table ha_email_lists
+# Dump of table FI_email_lists
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_email_lists` (
+CREATE TABLE `FI_email_lists` (
   `listID` int(11) NOT NULL auto_increment,
   `listName` varchar(100) default NULL,
   `dateCreated` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
@@ -222,10 +222,10 @@ CREATE TABLE `ha_email_lists` (
 
 
 
-# Dump of table ha_email_templates
+# Dump of table FI_email_templates
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_email_templates` (
+CREATE TABLE `FI_email_templates` (
   `templateID` int(11) NOT NULL auto_increment,
   `templateName` varchar(100) default NULL,
   `body` text,
@@ -239,10 +239,10 @@ CREATE TABLE `ha_email_templates` (
 
 
 
-# Dump of table ha_emails
+# Dump of table FI_emails
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_emails` (
+CREATE TABLE `FI_emails` (
   `emailID` int(11) NOT NULL auto_increment,
   `emailName` varchar(100) default NULL,
   `emailSubject` varchar(100) default NULL,
@@ -268,10 +268,10 @@ CREATE TABLE `ha_emails` (
 
 
 
-# Dump of table ha_events
+# Dump of table FI_events
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_events` (
+CREATE TABLE `FI_events` (
   `eventID` int(11) NOT NULL auto_increment,
   `eventTitle` varchar(100) collate utf8_unicode_ci default NULL,
   `dateCreated` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -294,10 +294,10 @@ CREATE TABLE `ha_events` (
 
 
 
-# Dump of table ha_file_folders
+# Dump of table FI_file_folders
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_file_folders` (
+CREATE TABLE `FI_file_folders` (
   `folderID` int(11) unsigned NOT NULL auto_increment,
   `parentID` int(11) unsigned NOT NULL default '0',
   `folderName` varchar(50) collate utf8_unicode_ci default NULL,
@@ -310,10 +310,10 @@ CREATE TABLE `ha_file_folders` (
 
 
 
-# Dump of table ha_files
+# Dump of table FI_files
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_files` (
+CREATE TABLE `FI_files` (
   `fileID` int(11) NOT NULL auto_increment,
   `fileRef` varchar(100) collate utf8_unicode_ci default NULL,
   `filename` varchar(100) collate utf8_unicode_ci default NULL,
@@ -330,10 +330,10 @@ CREATE TABLE `ha_files` (
 
 
 
-# Dump of table ha_forums
+# Dump of table FI_forums
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_forums` (
+CREATE TABLE `FI_forums` (
   `forumID` int(11) unsigned NOT NULL auto_increment,
   `forumName` varchar(100) collate utf8_unicode_ci default NULL,
   `catID` int(11) default NULL,
@@ -351,15 +351,15 @@ CREATE TABLE `ha_forums` (
   PRIMARY KEY  (`forumID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `ha_forums` (`forumID`, `forumName`, `catID`, `dateCreated`, `dateModified`, `description`, `topics`, `replies`, `lastPostID`, `private`, `groupID`, `active`, `deleted`, `siteID`) VALUES
+INSERT INTO `FI_forums` (`forumID`, `forumName`, `catID`, `dateCreated`, `dateModified`, `description`, `topics`, `replies`, `lastPostID`, `private`, `groupID`, `active`, `deleted`, `siteID`) VALUES
 (1, 'Test Forum', NULL, '2015-01-05 06:32:24', '2015-01-05 06:32:24', 'Just A Test Forum', 0, 0, NULL, 0, 0, 1, 0, 1);
 
 
 
-# Dump of table ha_forums_cats
+# Dump of table FI_forums_cats
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_forums_cats` (
+CREATE TABLE `FI_forums_cats` (
   `catID` int(11) unsigned NOT NULL auto_increment,
   `parentID` int(11) unsigned NOT NULL default '0',
   `catName` varchar(50) collate utf8_unicode_ci default NULL,
@@ -372,10 +372,10 @@ CREATE TABLE `ha_forums_cats` (
 
 
 
-# Dump of table ha_forums_posts
+# Dump of table FI_forums_posts
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_forums_posts` (
+CREATE TABLE `FI_forums_posts` (
   `postID` int(11) unsigned NOT NULL auto_increment,
   `topicID` int(11) unsigned NOT NULL default '0',
   `body` text collate utf8_unicode_ci,
@@ -389,10 +389,10 @@ CREATE TABLE `ha_forums_posts` (
 
 
 
-# Dump of table ha_forums_subs
+# Dump of table FI_forums_subs
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_forums_subs` (
+CREATE TABLE `FI_forums_subs` (
   `topicID` int(11) NOT NULL default '0',
   `userID` int(11) NOT NULL default '0',
   `siteID` int(11) default NULL,
@@ -401,10 +401,10 @@ CREATE TABLE `ha_forums_subs` (
 
 
 
-# Dump of table ha_forums_topics
+# Dump of table FI_forums_topics
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_forums_topics` (
+CREATE TABLE `FI_forums_topics` (
   `topicID` int(11) unsigned NOT NULL auto_increment,
   `forumID` int(11) unsigned NOT NULL default '0',
   `topicTitle` varchar(50) collate utf8_unicode_ci default NULL,
@@ -423,10 +423,10 @@ CREATE TABLE `ha_forums_topics` (
 
 
 
-# Dump of table ha_image_folders
+# Dump of table FI_image_folders
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_image_folders` (
+CREATE TABLE `FI_image_folders` (
   `folderID` int(11) unsigned NOT NULL auto_increment,
   `parentID` int(11) unsigned NOT NULL default '0',
   `folderName` varchar(100) collate utf8_unicode_ci default NULL,
@@ -440,10 +440,10 @@ CREATE TABLE `ha_image_folders` (
 
 
 
-# Dump of table ha_images
+# Dump of table FI_images
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_images` (
+CREATE TABLE `FI_images` (
   `imageID` int(11) NOT NULL auto_increment,
   `imageRef` varchar(100) collate utf8_unicode_ci default NULL,
   `filename` varchar(100) collate utf8_unicode_ci default NULL,
@@ -463,10 +463,10 @@ CREATE TABLE `ha_images` (
 
 
 
-# Dump of table ha_include_versions
+# Dump of table FI_include_versions
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_include_versions` (
+CREATE TABLE `FI_include_versions` (
   `versionID` int(11) NOT NULL auto_increment,
   `dateCreated` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `objectID` int(11) default NULL,
@@ -478,10 +478,10 @@ CREATE TABLE `ha_include_versions` (
 
 
 
-# Dump of table ha_includes
+# Dump of table FI_includes
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_includes` (
+CREATE TABLE `FI_includes` (
   `includeID` int(11) NOT NULL auto_increment,
   `dateCreated` timestamp NOT NULL default '0000-00-00 00:00:00',
   `dateModified` timestamp NOT NULL default CURRENT_TIMESTAMP,
@@ -495,10 +495,10 @@ CREATE TABLE `ha_includes` (
 
 
 
-# Dump of table ha_navigation
+# Dump of table FI_navigation
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_navigation` (
+CREATE TABLE `FI_navigation` (
   `navID` int(11) NOT NULL auto_increment,
   `dateCreated` timestamp NOT NULL default '0000-00-00 00:00:00',
   `dateModified` timestamp NOT NULL default CURRENT_TIMESTAMP,
@@ -514,10 +514,10 @@ CREATE TABLE `ha_navigation` (
 
 
 
-# Dump of table ha_page_blocks
+# Dump of table FI_page_blocks
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_page_blocks` (
+CREATE TABLE `FI_page_blocks` (
   `blockID` int(11) NOT NULL auto_increment,
   `pageID` int(11) default NULL,
   `versionID` int(11) NOT NULL default '0',
@@ -530,10 +530,10 @@ CREATE TABLE `ha_page_blocks` (
 
 
 
-# Dump of table ha_page_versions
+# Dump of table FI_page_versions
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_page_versions` (
+CREATE TABLE `FI_page_versions` (
   `versionID` int(11) NOT NULL auto_increment,
   `pageID` int(11) default NULL,
   `dateCreated` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -545,10 +545,10 @@ CREATE TABLE `ha_page_versions` (
 
 
 
-# Dump of table ha_pages
+# Dump of table FI_pages
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_pages` (
+CREATE TABLE `FI_pages` (
   `pageID` int(11) NOT NULL auto_increment,
   `versionID` int(11) NOT NULL default '0',
   `pageName` varchar(100) character set utf8 default NULL,
@@ -578,31 +578,31 @@ CREATE TABLE `ha_pages` (
 
 
 
-# Dump of table ha_permission_groups
+# Dump of table FI_permission_groups
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_permission_groups` (
+CREATE TABLE `FI_permission_groups` (
   `groupID` int(11) NOT NULL auto_increment,
   `groupName` varchar(200) collate utf8_unicode_ci default NULL,
   `siteID` int(11) default NULL,
   PRIMARY KEY  (`groupID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-LOCK TABLES `ha_permission_groups` WRITE;
-/*!40000 ALTER TABLE `ha_permission_groups` DISABLE KEYS */;
-INSERT INTO `ha_permission_groups` (`groupID`,`groupName`,`siteID`)
+LOCK TABLES `FI_permission_groups` WRITE;
+/*!40000 ALTER TABLE `FI_permission_groups` DISABLE KEYS */;
+INSERT INTO `FI_permission_groups` (`groupID`,`groupName`,`siteID`)
 VALUES
 	(-1,'Superuser',0);
 
-/*!40000 ALTER TABLE `ha_permission_groups` ENABLE KEYS */;
+/*!40000 ALTER TABLE `FI_permission_groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
 
-# Dump of table ha_permission_map
+# Dump of table FI_permission_map
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_permission_map` (
+CREATE TABLE `FI_permission_map` (
   `groupID` int(11) NOT NULL default '0',
   `permissionID` int(11) NOT NULL default '0',
   `siteID` int(11) default NULL,
@@ -611,10 +611,10 @@ CREATE TABLE `ha_permission_map` (
 
 
 
-# Dump of table ha_permissions
+# Dump of table FI_permissions
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_permissions` (
+CREATE TABLE `FI_permissions` (
   `permissionID` int(11) NOT NULL auto_increment,
   `permission` varchar(200) collate utf8_unicode_ci default NULL,
   `key` varchar(100) collate utf8_unicode_ci default NULL,
@@ -624,9 +624,9 @@ CREATE TABLE `ha_permissions` (
   UNIQUE KEY `key` (`key`)
 ) ENGINE=MyISAM AUTO_INCREMENT=49 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-LOCK TABLES `ha_permissions` WRITE;
-/*!40000 ALTER TABLE `ha_permissions` DISABLE KEYS */;
-INSERT INTO `ha_permissions` (`permission`,`key`,`category`,`special`)
+LOCK TABLES `FI_permissions` WRITE;
+/*!40000 ALTER TABLE `FI_permissions` DISABLE KEYS */;
+INSERT INTO `FI_permissions` (`permission`,`key`,`category`,`special`)
 VALUES
 	('Allow Pages','pages','Pages',0),
 	('Add / edit pages','pages_edit','Pages',0),
@@ -682,14 +682,14 @@ VALUES
 	('Add / edit lists','emailer_lists','Emailer',0);
 
 	
-/*!40000 ALTER TABLE `ha_permissions` ENABLE KEYS */;
+/*!40000 ALTER TABLE `FI_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
-# Dump of table ha_ratings
+# Dump of table FI_ratings
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_ratings` (
+CREATE TABLE `FI_ratings` (
   `ratingID` int(11) NOT NULL auto_increment,
   `objectID` int(11) default NULL,
   `table` varchar(50) collate utf8_unicode_ci default NULL,
@@ -701,10 +701,10 @@ CREATE TABLE `ha_ratings` (
 
 
 
-# Dump of table ha_shop_bands
+# Dump of table FI_shop_bands
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_shop_bands` (
+CREATE TABLE `FI_shop_bands` (
   `bandID` int(11) NOT NULL auto_increment,
   `bandName` varchar(100) collate utf8_unicode_ci default NULL,
   `multiplier` double default NULL,
@@ -714,10 +714,10 @@ CREATE TABLE `ha_shop_bands` (
 
 
 
-# Dump of table ha_shop_catmap
+# Dump of table FI_shop_catmap
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_shop_catmap` (
+CREATE TABLE `FI_shop_catmap` (
 	`catID` int(11) NOT NULL DEFAULT '0',
 	`productID` int(11) NOT NULL DEFAULT '0',
 	`siteID` int(11) DEFAULT NULL,
@@ -726,10 +726,10 @@ CREATE TABLE `ha_shop_catmap` (
 
 
 
-# Dump of table ha_shop_cats
+# Dump of table FI_shop_cats
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_shop_cats` (
+CREATE TABLE `FI_shop_cats` (
   `catID` int(11) unsigned NOT NULL auto_increment,
   `parentID` int(11) unsigned NOT NULL default '0',
   `catName` varchar(100) collate utf8_unicode_ci default NULL,
@@ -745,10 +745,10 @@ CREATE TABLE `ha_shop_cats` (
 
 
 
-# Dump of table ha_shop_discounts
+# Dump of table FI_shop_discounts
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_shop_discounts` (
+CREATE TABLE `FI_shop_discounts` (
   `discountID` int(11) NOT NULL auto_increment,
   `dateCreated` timestamp NOT NULL default '0000-00-00 00:00:00',
   `expiryDate` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -764,10 +764,10 @@ CREATE TABLE `ha_shop_discounts` (
 
 
 
-# Dump of table ha_shop_modifiers
+# Dump of table FI_shop_modifiers
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_shop_modifiers` (
+CREATE TABLE `FI_shop_modifiers` (
   `modifierID` int(11) NOT NULL auto_increment,
   `modifierName` varchar(100) collate utf8_unicode_ci default NULL,
   `bandID` int(11) default NULL,
@@ -778,10 +778,10 @@ CREATE TABLE `ha_shop_modifiers` (
 
 
 
-# Dump of table ha_shop_orders
+# Dump of table FI_shop_orders
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_shop_orders` (
+CREATE TABLE `FI_shop_orders` (
   `orderID` int(11) unsigned NOT NULL auto_increment,
   `dateCreated` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `transactionID` int(11) NOT NULL default '0',
@@ -794,10 +794,10 @@ CREATE TABLE `ha_shop_orders` (
 
 
 
-# Dump of table ha_shop_postages
+# Dump of table FI_shop_postages
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_shop_postages` (
+CREATE TABLE `FI_shop_postages` (
   `postageID` int(11) NOT NULL auto_increment,
   `total` double NOT NULL default '0',
   `cost` double NOT NULL default '0',
@@ -807,10 +807,10 @@ CREATE TABLE `ha_shop_postages` (
 
 
 
-# Dump of table ha_shop_products
+# Dump of table FI_shop_products
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_shop_products` (
+CREATE TABLE `FI_shop_products` (
   `productID` int(11) NOT NULL auto_increment,
   `catalogueID` varchar(100) collate utf8_unicode_ci default NULL,
   `dateCreated` timestamp NOT NULL default CURRENT_TIMESTAMP,
@@ -838,10 +838,10 @@ CREATE TABLE `ha_shop_products` (
 
 
 
-# Dump of table ha_shop_reviews
+# Dump of table FI_shop_reviews
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_shop_reviews` (
+CREATE TABLE `FI_shop_reviews` (
   `reviewID` int(11) NOT NULL auto_increment,
   `productID` int(11) NOT NULL default '0',
   `dateCreated` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -857,10 +857,10 @@ CREATE TABLE `ha_shop_reviews` (
 
 
 
-# Dump of table ha_shop_transactions
+# Dump of table FI_shop_transactions
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_shop_transactions` (
+CREATE TABLE `FI_shop_transactions` (
   `transactionID` int(11) unsigned NOT NULL auto_increment,
   `transactionCode` varchar(50) collate utf8_unicode_ci NOT NULL default '',
   `dateCreated` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -883,10 +883,10 @@ CREATE TABLE `ha_shop_transactions` (
 
 
 
-# Dump of table ha_shop_upsells
+# Dump of table FI_shop_upsells
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_shop_upsells` (
+CREATE TABLE `FI_shop_upsells` (
   `upsellID` int(11) unsigned NOT NULL auto_increment,
   `dateCreated` timestamp NOT NULL default '0000-00-00 00:00:00',
   `dateModified` timestamp NULL default CURRENT_TIMESTAMP,
@@ -904,10 +904,10 @@ CREATE TABLE `ha_shop_upsells` (
 
 
 
-# Dump of table ha_shop_variations
+# Dump of table FI_shop_variations
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_shop_variations` (
+CREATE TABLE `FI_shop_variations` (
   `variationID` int(11) unsigned NOT NULL auto_increment,
   `variation` varchar(50) collate utf8_unicode_ci default NULL,
   `price` double(10,2) NOT NULL default '0.00',
@@ -919,10 +919,10 @@ CREATE TABLE `ha_shop_variations` (
 
 
 
-# Dump of table ha_sites
+# Dump of table FI_sites
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_sites` (
+CREATE TABLE `FI_sites` (
   `siteID` int(11) NOT NULL auto_increment,
   `siteDomain` varchar(100) collate utf8_unicode_ci default NULL,
   `altDomain` varchar(100) collate utf8_unicode_ci default NULL,
@@ -981,10 +981,10 @@ CREATE TABLE `ha_sites` (
 
 
 
-# Dump of table ha_sub_payments
+# Dump of table FI_sub_payments
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_sub_payments` (
+CREATE TABLE `FI_sub_payments` (
   `paymentID` int(11) NOT NULL auto_increment,
   `referenceID` char(50) collate utf8_unicode_ci default NULL,
   `dateCreated` timestamp NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
@@ -995,10 +995,10 @@ CREATE TABLE `ha_sub_payments` (
 
 
 
-# Dump of table ha_subscribers
+# Dump of table FI_subscribers
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_subscribers` (
+CREATE TABLE `FI_subscribers` (
   `subscriberID` int(11) NOT NULL auto_increment,
   `subscriptionID` int(11) default NULL,
   `referenceID` varchar(50) collate utf8_unicode_ci default NULL,
@@ -1017,10 +1017,10 @@ CREATE TABLE `ha_subscribers` (
 
 
 
-# Dump of table ha_subscriptions
+# Dump of table FI_subscriptions
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_subscriptions` (
+CREATE TABLE `FI_subscriptions` (
   `subscriptionID` int(11) NOT NULL auto_increment,
   `subscriptionRef` varchar(100) collate utf8_unicode_ci default NULL,
   `cgCode` varchar(100) collate utf8_unicode_ci default NULL,
@@ -1040,10 +1040,10 @@ CREATE TABLE `ha_subscriptions` (
 
 
 
-# Dump of table ha_tags
+# Dump of table FI_tags
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_tags` (
+CREATE TABLE `FI_tags` (
   `id` int(11) NOT NULL auto_increment,
   `safe_tag` varchar(30) collate utf8_unicode_ci NOT NULL default '',
   `tag` varchar(50) collate utf8_unicode_ci NOT NULL default '',
@@ -1053,10 +1053,10 @@ CREATE TABLE `ha_tags` (
 
 
 
-# Dump of table ha_tags_ref
+# Dump of table FI_tags_ref
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_tags_ref` (
+CREATE TABLE `FI_tags_ref` (
   `tag_id` int(10) unsigned NOT NULL default '0',
   `row_id` int(10) unsigned NOT NULL default '0',
   `date` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -1066,10 +1066,10 @@ CREATE TABLE `ha_tags_ref` (
 
 
 
-# Dump of table ha_template_versions
+# Dump of table FI_template_versions
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_template_versions` (
+CREATE TABLE `FI_template_versions` (
   `versionID` int(11) NOT NULL auto_increment,
   `dateCreated` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `objectID` int(11) default NULL,
@@ -1081,10 +1081,10 @@ CREATE TABLE `ha_template_versions` (
 
 
 
-# Dump of table ha_templates
+# Dump of table FI_templates
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_templates` (
+CREATE TABLE `FI_templates` (
   `templateID` int(11) NOT NULL auto_increment,
   `templateName` varchar(100) collate utf8_unicode_ci default NULL,
   `dateCreated` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -1098,10 +1098,10 @@ CREATE TABLE `ha_templates` (
 
 
 
-# Dump of table ha_tickets
+# Dump of table FI_tickets
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_tickets` (
+CREATE TABLE `FI_tickets` (
   `ticketID` int(11) NOT NULL auto_increment,
   `dateCreated` timestamp NOT NULL default '0000-00-00 00:00:00',
   `dateModified` timestamp NOT NULL default CURRENT_TIMESTAMP,
@@ -1120,10 +1120,10 @@ CREATE TABLE `ha_tickets` (
 
 
 
-# Dump of table ha_tracking
+# Dump of table FI_tracking
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_tracking` (
+CREATE TABLE `FI_tracking` (
   `trackingID` int(11) NOT NULL auto_increment,
   `date` timestamp NULL default '0000-00-00 00:00:00',
   `userKey` varchar(32) collate utf8_unicode_ci default NULL,
@@ -1139,10 +1139,10 @@ CREATE TABLE `ha_tracking` (
 
 
 
-# Dump of table ha_users
+# Dump of table FI_users
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_users` (
+CREATE TABLE `FI_users` (
   `userID` int(11) NOT NULL auto_increment,
   `username` varchar(100) collate utf8_unicode_ci NOT NULL default '',
   `password` varchar(32) collate utf8_unicode_ci default NULL,
@@ -1199,20 +1199,20 @@ CREATE TABLE `ha_users` (
   KEY `emailindex` (`email`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-LOCK TABLES `ha_users` WRITE;
-/*!40000 ALTER TABLE `ha_users` DISABLE KEYS */;
-INSERT INTO `ha_users` (`userID`,`username`,`password`,`groupID`,`email`,`subscription`,`subscribed`,`bounced`,`dateCreated`,`dateModified`,`displayName`,`firstName`,`lastName`,`address1`,`address2`,`address3`,`city`,`state`,`postcode`,`country`,`currency`,`billingAddress1`,`billingAddress2`,`billingAddress3`,`billingCity`,`billingState`,`billingPostcode`,`billingCountry`,`phone`,`avatar`,`signature`,`bio`,`website`,`companyName`,`companyEmail`,`companyWebsite`,`companyDescription`,`companyLogo`,`language`,`posts`,`kudos`,`notifications`,`privacy`,`resetkey`,`lastLogin`,`custom1`,`custom2`,`custom3`,`custom4`,`active`,`siteID`)
+LOCK TABLES `FI_users` WRITE;
+/*!40000 ALTER TABLE `FI_users` DISABLE KEYS */;
+INSERT INTO `FI_users` (`userID`,`username`,`password`,`groupID`,`email`,`subscription`,`subscribed`,`bounced`,`dateCreated`,`dateModified`,`displayName`,`firstName`,`lastName`,`address1`,`address2`,`address3`,`city`,`state`,`postcode`,`country`,`currency`,`billingAddress1`,`billingAddress2`,`billingAddress3`,`billingCity`,`billingState`,`billingPostcode`,`billingCountry`,`phone`,`avatar`,`signature`,`bio`,`website`,`companyName`,`companyEmail`,`companyWebsite`,`companyDescription`,`companyLogo`,`language`,`posts`,`kudos`,`notifications`,`privacy`,`resetkey`,`lastLogin`,`custom1`,`custom2`,`custom3`,`custom4`,`active`,`siteID`)
 VALUES
 	(1,'superuser','f35364bc808b079853de5a1e343e7159',-1,'','Y',0,0,NOW(),NOW(),NULL,'Admin',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'USD',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,'english',0,0,1,'V',NULL,'0000-00-00 00:00:00',NULL,NULL,NULL,NULL,1,NULL);
 
-/*!40000 ALTER TABLE `ha_users` ENABLE KEYS */;
+/*!40000 ALTER TABLE `FI_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
-# Dump of table ha_web_forms
+# Dump of table FI_web_forms
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_web_forms` (
+CREATE TABLE `FI_web_forms` (
   `formID` int(11) NOT NULL auto_increment,
   `dateCreated` timestamp NULL default '0000-00-00 00:00:00',
   `dateModified` timestamp NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
@@ -1233,10 +1233,10 @@ CREATE TABLE `ha_web_forms` (
 
 
 
-# Dump of table ha_wiki
+# Dump of table FI_wiki
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_wiki` (
+CREATE TABLE `FI_wiki` (
   `pageID` int(11) NOT NULL auto_increment,
   `pageName` varchar(100) collate utf8_unicode_ci default NULL,
   `versionID` int(11) default NULL,
@@ -1254,10 +1254,10 @@ CREATE TABLE `ha_wiki` (
 
 
 
-# Dump of table ha_wiki_cats
+# Dump of table FI_wiki_cats
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_wiki_cats` (
+CREATE TABLE `FI_wiki_cats` (
   `catID` int(11) unsigned NOT NULL auto_increment,
   `parentID` int(11) unsigned NOT NULL default '0',
   `catName` varchar(50) collate utf8_unicode_ci default NULL,
@@ -1272,10 +1272,10 @@ CREATE TABLE `ha_wiki_cats` (
 
 
 
-# Dump of table ha_wiki_versions
+# Dump of table FI_wiki_versions
 # ------------------------------------------------------------
 
-CREATE TABLE `ha_wiki_versions` (
+CREATE TABLE `FI_wiki_versions` (
   `versionID` int(11) NOT NULL auto_increment,
   `pageID` int(11) NOT NULL default '0',
   `dateCreated` timestamp NOT NULL default CURRENT_TIMESTAMP,
