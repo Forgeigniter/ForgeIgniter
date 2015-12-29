@@ -179,12 +179,15 @@ class Pages_model extends CI_Model {
 		// select
 		$this->db->select('t1.*, t2.body, t2.dateCreated, t2.userID');
 
+		$this->db->from('templates t1');
+		$this->db->limit(1);
+
 		// join revisions
-		$this->db->join('template_versions t2', 't2.versionID = t1 . versionID', 'left');
-		
+		$this->db->join('template_versions t2', 't2.versionID = t1.versionID', 'left');
+
 		// get em
-		$query = $this->db->get('templates t1', 1);
-		
+		$query = $this->db->get();
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -214,15 +217,17 @@ class Pages_model extends CI_Model {
 		// select
 		$this->db->select('t1.*, t2.body, t2.dateCreated, t2.userID');
 
+		$this->db->from('templates t1');
+
 		// join revisions
-		$this->db->join('template_versions t2', 't2.versionID = t1 . versionID', 'left');
+		$this->db->join('template_versions t2', 't2.versionID = t1.versionID', 'left');
 
 		// order
 		$this->db->order_by('modulePath', 'asc');
 		$this->db->order_by('templateName', 'asc');
 		
 		// get all templates		
-		$query = $this->db->get('templates t1');
+		$query = $this->db->get();
 		
 		if ($query->num_rows())
 		{
@@ -304,12 +309,16 @@ class Pages_model extends CI_Model {
 		// select
 		$this->db->select('t1.*, t2.body, t2.dateCreated, t2.userID');
 
+		// table name and limit
+		$this->db->from('includes t1');
+		$this->db->limit(1);
+
 		// join revisions
-		$this->db->join('include_versions t2', 't2.versionID = t1 . versionID', 'left');
+		$this->db->join('include_versions t2', 't2.versionID = t1.versionID', 'left');
 		
 		// get em
-		$query = $this->db->get('includes t1' , 1);
-		
+		$query = $this->db->get();
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -335,14 +344,16 @@ class Pages_model extends CI_Model {
 		// select
 		$this->db->select('t1.*, t2.body, t2.dateCreated, t2.userID');
 
+		$this->db->from('includes t1');
+
 		// join revisions
-		$this->db->join('include_versions t2', 't2.versionID = t1 . versionID', 'left');
+		$this->db->join('include_versions t2', 't2.versionID = t1.versionID', 'left');
 
 		// order
 		$this->db->order_by('includeRef', 'asc');
 		
 		// get all includes		
-		$query = $this->db->get('includes t1');
+		$query = $this->db->get();
 		
 		if ($query->num_rows())
 		{
@@ -427,7 +438,7 @@ class Pages_model extends CI_Model {
 		$filenames = explode('.', $file);
 		$filename = substr($file, 0, strpos($file, '.'.end($filenames)));
 		$extension = end($filenames);
-		
+
 		// add html template (and includes)
 		if ($extension == 'html' || $extension == 'htm')
 		{
@@ -450,7 +461,7 @@ class Pages_model extends CI_Model {
 			{
 				$theme = substr(trim($matches[1]), 0, 15);
 				$themeRef = url_title(trim(strtolower($theme))).'-';
-			}		
+			}
 
 			// find out if header is in there
 			if (preg_match('/<!--CONTENT-->/i', $body))
