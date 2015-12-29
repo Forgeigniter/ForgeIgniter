@@ -272,11 +272,14 @@ class Core {
 		// select
 		$this->CI->db->select('t1.*, t2.body, t2.dateCreated, t2.userID');
 
+		$this->CI->db->from('templates t1');
+		$this->CI->db->limit(1);
+
 		// join revisions
-		$this->CI->db->join('template_versions t2', 't2.versionID = t1 . versionID', 'left');
+		$this->CI->db->join('template_versions t2', 't2.versionID = t1.versionID', 'left');
 		
 		// get em
-		$query = $this->CI->db->get('templates t1', 1);
+		$query = $this->CI->db->get();
 		
 		if ($query->num_rows())
 		{
@@ -341,11 +344,14 @@ class Core {
 		// select
 		$this->CI->db->select('t1.*, t2.body, t2.dateCreated, t2.userID');
 
+		$this->CI->db->from('includes t1');
+		$this->CI->db->limit(1);
+
 		// join revisions
-		$this->CI->db->join('include_versions t2', 't2.versionID = t1 . versionID', 'left');
+		$this->CI->db->join('include_versions t2', 't2.versionID = t1.versionID', 'left');
 		
 		// get em
-		$query = $this->CI->db->get('includes t1', 1);
+		$query = $this->CI->db->get();
 		
 		if ($query->num_rows())
 		{
