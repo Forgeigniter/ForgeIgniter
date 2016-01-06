@@ -17,11 +17,11 @@
 // ------------------------------------------------------------------------
 
 class Community_model extends CI_Model {
-	
+
 	function __construct()
 	{
 		parent::__construct();
-		
+
 		// get siteID, if available
 		if (defined('SITEID'))
 		{
@@ -44,13 +44,13 @@ class Community_model extends CI_Model {
 		if ($query->num_rows())
 		{
 			$result = $query->result_array();
-			
+
 			return $result;
 		}
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function lookup_user($userID, $display = FALSE)
@@ -64,7 +64,7 @@ class Community_model extends CI_Model {
 		if ($query->num_rows())
 		{
 			$row = $query->row_array();
-			
+
 			if ($display !== FALSE)
 			{
 				return $row['firstName'].' '.$row['lastName'];
@@ -77,14 +77,14 @@ class Community_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
-	
+
 	function count_users()
 	{
 		// default wheres
 		$this->db->where('siteID', $this->siteID);
-		$this->db->where('active', 1);	
+		$this->db->where('active', 1);
 
 		$this->db->select('COUNT(*) as countUsers');
 
@@ -100,5 +100,5 @@ class Community_model extends CI_Model {
 			return FALSE;
 		}
 	}
-	
+
 }
