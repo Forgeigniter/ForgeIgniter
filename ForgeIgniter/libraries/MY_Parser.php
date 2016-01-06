@@ -38,9 +38,9 @@ class MY_Parser extends CI_Parser {
 	 * @param	bool
 	 * @return	string
 	*/
-	 
+
 	function parse($template, $data, $return = FALSE, $include = FALSE)
-	{	
+	{
 		$CI =& get_instance();
 
 		if ($template == '')
@@ -49,23 +49,24 @@ class MY_Parser extends CI_Parser {
 		}
 
 		if ($include === FALSE)
-		{		
+		{
 			$template = $CI->load->view($template, $data, TRUE);
 		}
-		
+
 		if (isset($data) && $data != '')
 		{
+			$replace = array();
 			foreach ($data as $key => $val)
 			{
-				if (is_array($val))
-				{
-					$template = $this->_parse_pair($key, $val, $template);		
-				}
-				else
-				{
-					$template = $this->_parse_single($key, (string)$val, $template);
-				}
+				$replace = array_merge(
+					$replace,
+					is_array($val)
+						? $this->_parse_pair($key, $val, $template)
+						: $this->_parse_single($key, (string) $val, $template)
+				);
 			}
+
+			$template = strtr($template, $replace);
 		}
 
 		// Check for conditional statements
