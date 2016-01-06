@@ -17,7 +17,7 @@
 // ------------------------------------------------------------------------
 
 class Core {
-	
+
 	var $CI;						// CI instance
 	var $table ;					// default table
 	var $siteID;					// id of the site
@@ -27,21 +27,21 @@ class Core {
 	var $where = array();
 	var $set = array();
 	var $required = array();
-	
+
 	function Core()
-	{	
+	{
 		// init vars
 		$this->CI =& get_instance();
-		
+
 		// get siteID, if available
 		if (defined('SITEID'))
 		{
 			$this->siteID = SITEID;
 		}
-		
+
 		// set groupID from session (if set)
-		$this->groupID = ($this->CI->session->userdata('groupID')) ? $this->CI->session->userdata('groupID') : 0;	
-	}	
+		$this->groupID = ($this->CI->session->userdata('groupID')) ? $this->CI->session->userdata('groupID') : 0;
+	}
 
 	function get_page($pageID = FALSE, $uri = FALSE)
 	{
@@ -53,7 +53,7 @@ class Core {
 		{
 			$this->CI->db->where('deleted', 0);
 		}
-		
+
 		if (intval($pageID))
 		{
 			$this->CI->db->where('pageID', $pageID);
@@ -69,9 +69,9 @@ class Core {
 
 		// get the latest one, not a deleted one from the past
 		$this->CI->db->order_by('dateCreated', 'desc');
-		
+
 		$query = $this->CI->db->get('pages', 1);
-		
+
 		if ($query->num_rows() == 1)
 		{
 			return $query->row_array();
@@ -89,16 +89,16 @@ class Core {
 		{
 			return FALSE;
 		}
-		
+
 		$this->CI->db->where('siteID', $this->siteID);
-		
+
 		$this->CI->db->where('active', 1);
 		$this->CI->db->where('deleted', 0);
 
 		$this->CI->db->where('uri', $uri);
-		
+
 		$query = $this->CI->db->get('pages', 1);
-		
+
 		if ($query->num_rows() == 1)
 		{
 			return $query->row_array();
@@ -123,7 +123,7 @@ class Core {
 		{
 			$page = $this->CI->template->generate_template($pagedata);
 		}
-		
+
 		// set default parse variable to nothing
 		$page['error'] = '';
 		$page['message'] = '';
@@ -136,7 +136,7 @@ class Core {
 		// if logged in as admin, then get the blocks from draft, otherwise get them from the published version
 		$versionID = ($admin === TRUE) ? $pagedata['draftID'] : $pagedata['versionID'];
 
-		// populate blocks from db (if they exist)		
+		// populate blocks from db (if they exist)
 		if ($blocksResult = $this->get_blocks($versionID))
 		{
 			foreach($blocksResult as $blockRow)
@@ -168,10 +168,10 @@ class Core {
 									<a href="#" class="halogycms_h3button"><img src="'.$this->CI->config->item('staticPath').'/images/btn_h3.png" alt="Heading 3" title="Heading 3" class="halogycms_helper" /></a>
 									<a href="#" class="halogycms_urlbutton"><img src="'.$this->CI->config->item('staticPath').'/images/btn_url.png" alt="Insert Link" title="Insert Link" class="halogycms_helper" /></a>
 									<a href="'.site_url('/admin/images/browser').'" class="halogycms_imagebutton"><img src="'.$this->CI->config->item('staticPath').'/images/btn_image.png" alt="Insert Image" title="Insert Image" class="halogycms_helper" /></a>
-									<a href="'.site_url('/admin/files/browser').'" class="halogycms_filebutton"><img src="'.$this->CI->config->item('staticPath').'/images/btn_file.png" alt="Insert File" title="Insert File" class="halogycms_helper" /></a>									
+									<a href="'.site_url('/admin/files/browser').'" class="halogycms_filebutton"><img src="'.$this->CI->config->item('staticPath').'/images/btn_file.png" alt="Insert File" title="Insert File" class="halogycms_helper" /></a>
 									<a href="#" class="halogycms_cancelbutton"><img src="'.$this->CI->config->item('staticPath').'/images/btn_cancel.png" alt="Cancel" title="Cancel Changes" class="halogycms_helper" /></a>
 									<a href="'.site_url('/admin/pages/add_block/'.$versionID.'/'.$blockRef).'" class="halogycms_savebutton"><img src="'.$this->CI->config->item('staticPath').'/images/btn_save.png" alt="Save" title="Save Changes" class="halogycms_helper" /></a>
-									<a href="#" class="halogycms_editbutton">Edit</a>									
+									<a href="#" class="halogycms_editbutton">Edit</a>
 								</div>
 								<div class="halogycms_blockelement">'.@$mkdnBody[$blockRef].'</div>
 								<div class="halogycms_editblock"><textarea rows="8" cols="10" class="code">'.@$body[$blockRef].'</textarea></div>
@@ -182,10 +182,10 @@ class Core {
 				else
 				{
 					$page[$blockRef] = @$mkdnBody[$blockRef];
-				}				
+				}
 			}
 		}
-		
+
 		return $page;
 	}
 
@@ -195,9 +195,9 @@ class Core {
 		$this->CI->db->where('published', 1);
 
 		$this->CI->db->order_by('dateCreated', 'desc');
-	
+
 		$query = $this->CI->db->get('page_versions', 30);
-		
+
 		// get data
 		if ($query->num_rows())
 		{
@@ -206,7 +206,7 @@ class Core {
 		else
 		{
 			return false;
-		}		
+		}
 	}
 
 	function get_drafts($pageID)
@@ -215,9 +215,9 @@ class Core {
 		$this->CI->db->where('published', 0);
 
 		$this->CI->db->order_by('dateCreated', 'desc');
-	
+
 		$query = $this->CI->db->get('page_versions');
-		
+
 		// get data
 		if ($query->num_rows())
 		{
@@ -226,12 +226,12 @@ class Core {
 		else
 		{
 			return false;
-		}		
+		}
 	}
 
 	function get_blocks($versionID)
 	{
-		$this->CI->db->where('siteID', $this->siteID);		
+		$this->CI->db->where('siteID', $this->siteID);
 		$this->CI->db->select('MAX(blockID) as blockID');
 		$this->CI->db->where('versionID', $versionID);
 		$this->CI->db->group_by('blockRef');
@@ -239,7 +239,7 @@ class Core {
 		$query = $this->CI->db->get('page_blocks');
 		$result = $query->result_array();
 		$numBlocks = $query->num_rows();
-		
+
 		// get data
 		if ($numBlocks > 0)
 		{
@@ -253,13 +253,13 @@ class Core {
 			$this->CI->db->where('versionID', $versionID);
 			$this->CI->db->order_by('blockID');
 			$query = $this->CI->db->get('page_blocks', $numBlocks);
-			
+
 			return $query->result_array();
 		}
 		else
 		{
 			return false;
-		}		
+		}
 	}
 
 	function get_template($templateID = '')
@@ -277,10 +277,10 @@ class Core {
 
 		// join revisions
 		$this->CI->db->join('template_versions t2', 't2.versionID = t1.versionID', 'left');
-		
+
 		// get em
 		$query = $this->CI->db->get();
-		
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -301,12 +301,15 @@ class Core {
 		// select
 		$this->CI->db->select('t1.*, t2.body, t2.dateCreated, t2.userID');
 
+		$this->CI->db->from('templates t1');
+		$this->CI->db->limit(1);
+
 		// join revisions
-		$this->CI->db->join('template_versions t2', 't2.versionID = t1 . versionID', 'left');
-		
+		$this->CI->db->join('template_versions t2', 't2.versionID = t1.versionID', 'left');
+
 		// get em
-		$query = $this->CI->db->get('templates t1', 1);
-		
+		$query = $this->CI->db->get();
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -349,10 +352,10 @@ class Core {
 
 		// join revisions
 		$this->CI->db->join('include_versions t2', 't2.versionID = t1.versionID', 'left');
-		
+
 		// get em
 		$query = $this->CI->db->get();
-		
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -360,7 +363,7 @@ class Core {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function lookup_user($userID, $display = FALSE)
@@ -374,7 +377,7 @@ class Core {
 		if ($query->num_rows())
 		{
 			$row = $query->row_array();
-			
+
 			if ($display !== FALSE)
 			{
 				return ($row['displayName']) ? $row['displayName'] : trim($row['firstName'].' '.$row['lastName']);
@@ -387,20 +390,20 @@ class Core {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function add_draft($pageID)
 	{
 		if ($pagedata = $this->get_page($pageID))
-		{	
+		{
 			// add new version
 			$this->CI->db->set('pageID', $pageID);
 			$this->CI->db->set('dateCreated', date("Y-m-d H:i:s"));
 			$this->CI->db->set('userID', $this->CI->session->userdata('userID'));
 			$this->CI->db->set('siteID', $this->siteID);
 			$this->CI->db->insert('page_versions');
-	
+
 			// get version ID
 			$draftID = $this->CI->db->insert_id();
 
@@ -418,8 +421,8 @@ class Core {
 					$body = $block['body'];
 					$this->add_block($body, $draftID, $block['blockRef']);
 				}
-			}				
-		
+			}
+
 			return $draftID;
 		}
 		else
@@ -432,7 +435,7 @@ class Core {
 	{
 		$this->CI->db->where('versionID', $versionID);
 		$this->CI->db->where('siteID', $this->siteID);
-		
+
 		$this->CI->db->order_by('dateCreated', 'desc');
 
 		// grab
@@ -448,7 +451,7 @@ class Core {
 			return FALSE;
 		}
 	}
-	
+
 	function publish_page($pageID, $draftID)
 	{
 		$this->CI->db->set('dateModified', date("Y-m-d H:i:s"));
@@ -489,7 +492,7 @@ class Core {
 		// update the template with version
 		$this->CI->db->set('draftID', $draftID);
 		$this->CI->db->where('pageID', $pageID);
-		$this->CI->db->where('siteID', $this->siteID);		
+		$this->CI->db->where('siteID', $this->siteID);
 		$this->CI->db->update('pages');
 
 		return TRUE;
@@ -519,17 +522,17 @@ class Core {
 	{
 		$this->CI->db->set('views', 'views+1', false);
 		$this->CI->db->where('pageID', $pageID);
-		$this->CI->db->where('siteID', $this->siteID);		
+		$this->CI->db->where('siteID', $this->siteID);
 		$this->CI->db->update('pages');
 	}
 
 	function get_web_form_by_ref($formRef)
 	{
 		$this->CI->db->where('formRef', $formRef);
-		
+
 		$this->CI->db->where('deleted', 0);
 		$this->CI->db->where('siteID', $this->siteID);
-		
+
 		$query = $this->CI->db->get('web_forms', 1);
 
 		if ($query->num_rows())
@@ -541,7 +544,7 @@ class Core {
 			return FALSE;
 		}
 	}
-		
+
 	function web_form()
 	{
 		// get web form
@@ -549,10 +552,10 @@ class Core {
 		{
 			return FALSE;
 		}
-		
+
 		// set main required field
 		$this->CI->form_validation->set_rules('email', 'Email', 'required|valid_email');
-		
+
 		// find out if a user account needs to be created
 		$account = ($webform['account']) ? TRUE : FALSE;
 
@@ -577,7 +580,7 @@ class Core {
 		{
 			$firstName = $this->CI->input->post('firstName', TRUE);
 			$lastName = $this->CI->input->post('lastName', TRUE);
-		}		
+		}
 		elseif ($fullName = $this->CI->input->post('fullName', TRUE))
 		{
 			$fullNameArray = @explode(' ', $fullName);
@@ -597,13 +600,13 @@ class Core {
 			$this->CI->session->set_userdata('firstName', $firstName);
 			$this->CI->session->set_userdata('lastName', $lastName);
 		}
-		
+
 		// if capturing check user is unique and a password matches
 		if ($account)
 		{
 			// email and message are always required
 			$this->CI->form_validation->set_rules('email', 'Email', 'required|valid_email|unique[users.email]|trim');
-	
+
 			// check if password was submitted, make it required if so
 			if (array_key_exists('password', $_POST))
 			{
@@ -618,7 +621,7 @@ class Core {
 				}
 			}
 		}
-		
+
 		// look for files
 		$files = FALSE;
 		if ($webform['fileTypes'] && count($_FILES))
@@ -627,7 +630,7 @@ class Core {
 			{
 				$this->CI->uploads->maxSize = '2000';
 				$this->CI->uploads->allowedTypes = $webform['fileTypes'];
-				
+
 				// check a file has actually been uploaded
 				if ($file['name'] != '')
 				{
@@ -642,7 +645,7 @@ class Core {
 				}
 			}
 		}
-		
+
 		// add ticket
 		if ($this->CI->form_validation->run())
 		{
@@ -650,7 +653,7 @@ class Core {
 			{
 				// create user
 				$this->create_user();
-				
+
 				// set admin session name, if given
 				if (!$this->CI->site->config['activation'])
 				{
@@ -683,7 +686,7 @@ class Core {
 			else
 			{
 				return 'Thank you, your message was sent successfully.';
-			}				
+			}
 		}
 		else
 		{
@@ -698,12 +701,12 @@ class Core {
 		{
 			return FALSE;
 		}
-			
+
 		if ($this->CI->input->post('email'))
 		{
 			// set system fields
 			$fields = array('required', 'formID', 'fieldSet', 'fileTypes', 'account', 'formName', 'outcomeEmails', 'outcomeRedirect', 'outcomeMessage', 'fullName', 'email', 'subject', 'message', 'toEmail', 'captcha', 'firstName', 'lastName', 'password', 'confirmPassword', 'groupID');
-			
+
 			// set default message
 			$message = '';
 			$filepaths = '';
@@ -720,7 +723,7 @@ class Core {
 					}
 				}
 			}
-			
+
 			// get files and prepend to message
 			if ($files)
 			{
@@ -731,31 +734,31 @@ class Core {
 					$filepaths .= '<br /><a href="'.site_url($this->CI->uploads->uploadsPath.'/'.$fileData['file_name']).'">'.$fileData['client_name'].'</a>';
 				}
 			}
-			
+
 			// get posted message
-			$message .= (strlen($message) > 1) ? "\n" : '';			
+			$message .= (strlen($message) > 1) ? "\n" : '';
 			$message .= $this->CI->input->post('message', TRUE);
 
-			// set defaults 
+			// set defaults
 			$fullName = ($this->CI->input->post('fullName')) ? $this->CI->input->post('fullName', TRUE) : 'N/A';
 			$subject = ($this->CI->input->post('subject')) ? $this->CI->input->post('subject', TRUE) : (($webform['formName']) ? $webform['formName'] : 'No Subject');
 			$outcomeEmails = ($webform['outcomeEmails']) ? explode(',', $webform['outcomeEmails']) : $this->CI->site->config['siteEmail'];
-			
+
 			// get first name and last name
 			$names = explode(' ', $fullName);
 			$firstName = (sizeof($names) > 1 && $names[0]) ? ucfirst(trim($names[0])) : '';
 			$lastName = (sizeof($names) > 1) ? ucfirst(end($names)) : '';
-					
+
 			// add ticket
 			$this->CI->db->set('siteID', $this->siteID);
 			$this->CI->db->set('dateCreated', date("Y-m-d H:i:s"));
-			($webform['formName']) ? $this->CI->db->set('formName', $webform['formName']) : ''; 
+			($webform['formName']) ? $this->CI->db->set('formName', $webform['formName']) : '';
 			$this->CI->db->set('fullName', $fullName);
 			$this->CI->db->set('email', $this->CI->input->post('email', TRUE));
 			$this->CI->db->set('subject', $subject);
 			$this->CI->db->set('body', $message.$filepaths);
 			$this->CI->db->insert('tickets');
-			$ticketID = $this->CI->db->insert_id();			
+			$ticketID = $this->CI->db->insert_id();
 
 			// set header and footer
 			$emailHeader = str_replace('{name}', $fullName, $this->CI->site->config['emailHeader']);
@@ -770,7 +773,7 @@ class Core {
 			$emailTicket = str_replace('{first-name}', $firstName, $emailTicket);
 			$emailTicket = str_replace('{last-name}', $lastName, $emailTicket);
 			$emailTicket = str_replace('{email}', $this->CI->input->post('email', TRUE), $emailTicket);
-			
+
 			// send despatch email to customer
 			$body = $emailHeader."\n\n";
 			$body .= $emailTicket."\n\n";
@@ -784,7 +787,7 @@ class Core {
 			{
 				$body .= "Message:\n";
 				$body .= "---------------------------------------------\n\n";
-				$body .= $message."\n\n";			
+				$body .= $message."\n\n";
 				$body .= "---------------------------------------------\n\n";
 			}
 
@@ -797,9 +800,9 @@ class Core {
 				$body .= "Your password: \t".(($this->CI->input->post('password', TRUE)) ? $this->CI->input->post('password', TRUE) : substr(md5(time()),0,6))."\n\n";
 				$body .= "---------------------------------------------\n\n";
 			}
-			
+
 			$footerBody = $emailFooter;
-	
+
 			// load email lib and email user and admin
 			$this->CI->load->library('email');
 
@@ -807,7 +810,7 @@ class Core {
 			if ($files)
 			{
 				foreach ($files as $file)
-				{	
+				{
 					$this->CI->email->attach($file['full_path']);
 				}
 			}
@@ -839,7 +842,7 @@ class Core {
 	function create_user()
 	{
 		// get values
-		$this->CI->core->get_values('users');	
+		$this->CI->core->get_values('users');
 
 		// security check
 		if ($this->CI->input->post('username')) $this->CI->core->set['username'] = '';
@@ -855,7 +858,7 @@ class Core {
 		foreach((array)$permissionGroupsArray as $group)
 		{
 			$permissionGroups[$group['groupID']] = $group['groupName'];
-		}				
+		}
 		if ($this->CI->input->post('groupID') > 0 && !@in_array($this->CI->input->post('groupID'), $permissionGroups))
 		{
 			$this->CI->core->set['groupID'] = $this->CI->input->post('groupID');
@@ -867,7 +870,7 @@ class Core {
 		// init null name
 		$firstName = '';
 		$lastName = '';
-		
+
 		// set name if only fullName is posted
 		if ($this->CI->input->post('fullName') && (!$this->CI->input->post('firstName') && !$this->CI->input->post('lastName')))
 		{
@@ -875,24 +878,24 @@ class Core {
 			$fullNameArray = @explode(' ', $fullName);
 			$lastName = (sizeof($fullNameArray) > 0) ? ucfirst(trim(end($fullNameArray))) : '';
 			$firstName = (sizeof($fullNameArray) > 0) ? ucfirst(trim($fullNameArray[0])) : $fullName;
-			
+
 			$this->CI->core->set['firstName'] = $firstName;
-			$this->CI->core->set['lastName'] = $lastName;			
+			$this->CI->core->set['lastName'] = $lastName;
 		}
-		
+
 		// set first name
 		if ($this->CI->input->post('firstName'))
 		{
 			$firstName = ucfirst($this->CI->input->post('firstName', TRUE));
 			$this->CI->core->set['firstName'] = $firstName;
 		}
-		
+
 		// set last name
 		if ($this->CI->input->post('lastName'))
 		{
 			$lastName = ucfirst($this->CI->input->post('lastName', TRUE));
 			$this->CI->core->set['lastName'] = $lastName;
-		}		
+		}
 
 		// generate password
 		if (!$this->CI->input->post('password'))
@@ -921,8 +924,8 @@ class Core {
 					'password' => ($this->CI->input->post('password')) ? $this->CI->input->post('password', TRUE) : $password,
 					'firstName' => $firstName,
 					'lastName' => $lastName
-				);	
-				
+				);
+
 				return $result;
 			}
 			else
@@ -955,8 +958,8 @@ class Core {
 			return TRUE;
 		}
 	}
-	
-	
+
+
 	/* UTILITIES */
 
 	// gets posted values
@@ -969,7 +972,7 @@ class Core {
 			{
 				$post[$key] = $this->CI->input->post($key);
 			}
-			
+
 			return $post;
 		}
 		else
@@ -991,18 +994,18 @@ class Core {
 			$values = $data;
 		}
 
-		// get data from database		
+		// get data from database
 		else
 		{
 			$table = $data;
-			
+
 			if ($id)
 			{
 				$query = $this->CI->db->get_where($table, $id);
-	
+
 				if ($query->num_rows())
 				{
-					$row = $query->row_array();	
+					$row = $query->row_array();
 					$values = $row;
 				}
 			}
@@ -1031,18 +1034,18 @@ class Core {
 								$values[$field] = md5($value);
 							}
 						}
-		
+
 						// overwrite value with posted value
 						else
 						{
 							$values[$field] = $value;
 						}
 					}
-			
+
 					if (array_key_exists($field, $this->set))
 					{
 						unset($values[$field]);
-					}	
+					}
 				}
 			}
 		}
@@ -1051,19 +1054,19 @@ class Core {
 	}
 
 	// is ajax?
-    function is_ajax() 
+    function is_ajax()
     {
         return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
     }
 
 	// check for errors
 	function check_errors()
-	{	
+	{
 		// set rules for validation
 		if (isset($this->required))
 		{
 			$config = array();
-			
+
 			foreach ($this->required as $field => $name)
 			{
 				if (is_array($name))
@@ -1104,13 +1107,13 @@ class Core {
 			return TRUE;
 		}
 	}
-	
+
 	// get all rows from a table
 	function viewall($table, $where = '', $order = '', $limit = '')
 	{
 		// get table fields
 		$fields = $this->CI->db->list_fields($table);
-		
+
 		// set limit from uri if set
 		$limit = (!$limit) ? $this->CI->site->config['paging'] : $limit;
 
@@ -1135,7 +1138,7 @@ class Core {
 				}
 			}
 		}
-		
+
 		// order override
 		elseif ($order && !is_array($order))
 		{
@@ -1150,7 +1153,7 @@ class Core {
 		{
 			$this->CI->db->order_by('dateCreated', 'desc');
 		}
-		
+
 		// wheres
 		if ($where)
 		{
@@ -1181,19 +1184,19 @@ class Core {
 		if (in_array('deleted', $fields))
 		{
 			$this->CI->db->where('deleted', 0);
-		}		
-		$query_total = $this->CI->db->get($table); 
-		$totalRows = $query_total->num_rows();	
+		}
+		$query_total = $this->CI->db->get($table);
+		$totalRows = $query_total->num_rows();
 
 		// set pagination config
 		$this->set_paging($totalRows, $limit);
 
-		return $output;			
+		return $output;
 	}
 
-	// update table	
+	// update table
 	function update($table, $id = '')
-	{	
+	{
 		if (count($_POST) || count($_FILES))
 		{
 			// get fields of this table
@@ -1203,10 +1206,10 @@ class Core {
 			if ($id)
 			{
 				$query = $this->CI->db->get_where($table, $id);
-	
+
 				if ($query->num_rows())
 				{
-					$row = $query->row_array();	
+					$row = $query->row_array();
 				}
 			}
 
@@ -1233,15 +1236,15 @@ class Core {
 				if (!$this->adminOverRide && $this->siteID)
 				{
 					$this->set['siteID'] = SITEID;
-				}			
-				
+				}
+
 				// set fields
 				if ($this->set && sizeof($this->set) > 0)
-				{				
+				{
 					$this->CI->db->set($this->set);
 					unset($this->set);
 				}
-	
+
 				// add row
 				if (@!$row && !$id)
 				{
@@ -1265,7 +1268,7 @@ class Core {
 			else
 			{
 				return FALSE;
-			}			
+			}
 		}
 		else
 		{
@@ -1278,24 +1281,24 @@ class Core {
 	{
 		// get default limit
 		$limit = ($limit) ? $limit : $this->CI->site->config['paging'];
-		
+
 		// set pagination config
-		$config['total_rows'] = $totalRows;		
+		$config['total_rows'] = $totalRows;
 		$config['per_page'] = $limit;
 		$config['full_tag_open'] = '<div class="pagination"><p>';
 		$config['full_tag_close'] = '</p></div>';
 		$config['num_links'] = 6;
 		$this->CI->pagination->initialize($config);
-	}	
+	}
 
 	// delete permanently
 	function delete($table, $id)
-	{	
+	{
 		// delete item from db
 		if (!$this->adminOverRide && $this->siteID)
 		{
 			$this->CI->db->where('siteID', $this->siteID);
-		}		
+		}
 		if ($this->where && sizeof($this->where) > 0)
 		{
 			$this->CI->db->where($this->where);
@@ -1319,7 +1322,7 @@ class Core {
 		if (!$this->adminOverRide && $this->siteID)
 		{
 			$this->CI->db->where('siteID', $this->siteID);
-		}		
+		}
 		$this->CI->db->set('deleted', 1);
 		if ($this->where && sizeof($this->where) > 0)
 		{
@@ -1337,7 +1340,7 @@ class Core {
 			return false;
 		}
 	}
-	
+
 	// order rows
 	function order($table = '', $field = '')
 	{
@@ -1347,7 +1350,7 @@ class Core {
 			foreach ($_POST[$table] as $key => $value)
 			{
 				if ($this->siteID)
-				{	
+				{
 					$this->CI->db->where('siteID', $this->siteID);
 				}
 				$this->CI->db->where($field.'ID', $value);
@@ -1358,7 +1361,7 @@ class Core {
 		{
 			return false;
 		}
-	}	
+	}
 
 	// encode url
 	function encode($data)
@@ -1371,5 +1374,5 @@ class Core {
 	{
 		return base64_decode(strtr($base64, '-_', '+/'));
 	}
-	
+
 }
