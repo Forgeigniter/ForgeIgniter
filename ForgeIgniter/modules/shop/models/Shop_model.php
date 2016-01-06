@@ -17,15 +17,15 @@
 // ------------------------------------------------------------------------
 
 class Shop_model extends CI_Model {
-	
+
 	// paypal pro config
 	var $APISignature = '';
 	var $APIUser = '';
-	var $APIPass = '';		
-	
+	var $APIPass = '';
+
 	// sagepay config
 	var $vendor = '';
-	
+
 	// defaults
 	var $table = '';
 	var $uri_assoc_segment = 4;
@@ -41,7 +41,7 @@ class Shop_model extends CI_Model {
 	var $fields = array();		// array holds the fields to submit to paypal
 	var $shopShippingTable = array();
 	var $siteVars = array();
-	
+
 	function __construct()
 	{
 		parent::__construct();
@@ -91,27 +91,27 @@ class Shop_model extends CI_Model {
 			if ($this->site->config['shopGateway'] == 'rbsworldpay') $this->gateway_url = 'https://secure.wp3.rbsworldpay.com/wcc/purchase';
 			if ($this->site->config['shopGateway'] == 'sagepay') $this->gateway_url = 'https://live.sagepay.com/gateway/service/vspserver-register.vsp';
 		}
-		
+
 		// get API / vendor keys
 		$this->APISignature = $this->site->config['shopAPIKey'];
 		$this->APIUser = $this->site->config['shopAPIUser'];
 		$this->APIPass = $this->site->config['shopAPIPass'];
 		$this->vendor = $this->site->config['shopVendor'];
-		
+
 		$this->last_error = '';
 		$this->response = '';
 		$this->response_log = FALSE;
 		$this->response_log_file = BASEPATH . 'logs/paypal_ipn.log';
 	}
-	
+
 	function get_categories($catID = '')
 	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0, 'parentID' => 0));
-		
+
 		$this->db->select('shop_cats.*, parentID as tempParentID, if(parentID>0, parentID+1, catID) AS parentOrder, (SELECT catName from '.$this->db->dbprefix.'shop_cats WHERE '.$this->db->dbprefix.'shop_cats.catID = tempParentID) AS parentName', FALSE);
-		$this->db->order_by('catOrder');			
-		
+		$this->db->order_by('catOrder');
+
 		// template type
 		$query = $this->db->get('shop_cats');
 
@@ -119,12 +119,12 @@ class Shop_model extends CI_Model {
 		{
 			// get categories
 			$result = $query->result_array();
-			
+
 			foreach ($result as $cat)
 			{
 				// populate array
-				$categories[] = $cat;				
-				
+				$categories[] = $cat;
+
 				// get children
 				if ($children = $this->get_category_children($cat['catID']))
 				{
@@ -135,7 +135,7 @@ class Shop_model extends CI_Model {
 					}
 				}
 			}
-			
+
 			return $categories;
 		}
 		else
@@ -148,15 +148,15 @@ class Shop_model extends CI_Model {
 	{
 		// select
 		$this->db->select('shop_cats.*, parentID as tempParentID, (SELECT catName from '.$this->db->dbprefix.'shop_cats WHERE '.$this->db->dbprefix.'shop_cats.catID = tempParentID) AS parentName, (SELECT catSafe from '.$this->db->dbprefix.'shop_cats WHERE '.$this->db->dbprefix.'shop_cats.catID = tempParentID) AS parentSafe', FALSE);
-		
+
 		// default where
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0));
 
 		// get category by ID
 		$this->db->where('catID', $catID);
-		
+
 		$query = $this->db->get('shop_cats', 1);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -164,14 +164,14 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
-	
+
 	function get_category_by_reference($catRef = '', $parentRef = '')
 	{
 		// get parent
 		$parent = ($parentRef) ? $this->get_category_by_reference($parentRef) : '';
-		
+
 		// select parent
 		$this->db->select('shop_cats.*, parentID as tempParentID, (SELECT catName from '.$this->db->dbprefix.'shop_cats WHERE '.$this->db->dbprefix.'shop_cats.catID = tempParentID) AS parentName, (SELECT catSafe from '.$this->db->dbprefix.'shop_cats WHERE '.$this->db->dbprefix.'shop_cats.catID = tempParentID) AS parentSafe', FALSE);
 
@@ -187,12 +187,12 @@ class Shop_model extends CI_Model {
 		{
 			$this->db->where('parentID', 0);
 		}
-		
+
 		// get category by reference
 		$this->db->where('catSafe', $catRef);
-		
+
 		$query = $this->db->get('shop_cats', 1);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -200,21 +200,21 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_category_parents()
-	{		
+	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0));
 
 		// where parent is set
-		$this->db->where('parentID', 0); 
-		
+		$this->db->where('parentID', 0);
+
 		$this->db->order_by('catOrder', 'asc');
-		
+
 		$query = $this->db->get('shop_cats');
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -222,24 +222,24 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_category_children($catID = '')
 	{
 		// select
 		$this->db->select('shop_cats.*, parentID as tempParentID, if(parentID>0, parentID+1, catID) AS parentOrder, (SELECT catName from '.$this->db->dbprefix.'shop_cats WHERE '.$this->db->dbprefix.'shop_cats.catID = tempParentID) AS parentName', FALSE);
-		
+
 		// default where
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0));
 
 		// get category by ID
 		$this->db->where('parentID', $catID);
-		
+
 		$this->db->order_by('catOrder', 'asc');
-		
+
 		$query = $this->db->get('shop_cats');
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -247,59 +247,59 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
-	
+
 	function get_cats_for_product($productID)
 	{
 		// get cats for this product
 		$this->db->join('shop_cats', 'shop_catmap.catID = shop_cats.catID', 'left');
 		$this->db->order_by('catOrder');
 		$query = $this->db->get_where('shop_catmap', array('productID' => $productID));
-	
+
 		if ($query->num_rows())
 		{
 			$catsArray = $query->result_array();
-			$cats = array();			
-			
+			$cats = array();
+
 			foreach($catsArray as $cat)
 			{
 				$cats[$cat['catID']] = $cat['catName'];
 			}
-	
+
 			return $cats;
 		}
 		else
 		{
 			return FALSE;
-		}	
+		}
 	}
-	
+
 	function get_cat_ids_for_product($productID)
 	{
 		// get cats for this product
 		$this->db->join('shop_cats', 'shop_catmap.catID = shop_cats.catID', 'left');
 		$this->db->order_by('catOrder');
 		$query = $this->db->get_where('shop_catmap', array('productID' => $productID));
-	
+
 		if ($query->num_rows())
 		{
 			$catsArray = $query->result_array();
-			$catIDs = array();			
-			
+			$catIDs = array();
+
 			foreach($catsArray as $cat)
 			{
 				$catIDs[] = $cat['catID'];
 			}
-	
+
 			return $catIDs;
 		}
 		else
 		{
 			return FALSE;
-		}	
+		}
 	}
-	
+
 	function update_cats($productID, $catsArray = '')
 	{
 		// delete cats
@@ -310,9 +310,9 @@ class Shop_model extends CI_Model {
 			foreach($catsArray as $catID => $cat)
 			{
 				if ($cat)
-				{					
+				{
 					$query = $this->db->get_where('shop_catmap', array('productID' => $productID, 'catID' => $catID, 'siteID' => $this->siteID));
-					
+
 					if (!$query->num_rows())
 					{
 						$this->db->insert('shop_catmap', array('productID' => $productID, 'catID' => $catID, 'siteID' => $this->siteID));
@@ -328,11 +328,11 @@ class Shop_model extends CI_Model {
 	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID));
-		
+
 		$this->db->order_by('multiplier', 'asc');
-		
+
 		$query = $this->db->get('shop_bands');
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -340,19 +340,19 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_band($bandID)
 	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID));
-		
+
 		// get category by ID
 		$this->db->where('bandID', $bandID);
-		
+
 		$query = $this->db->get('shop_bands', 1);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -360,19 +360,19 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
-	
+
 	function get_band_by_multiplier($multiplier = '')
 	{
 		// default where
 		$this->db->where('siteID', $this->siteID);
-		
+
 		// where multiplier
 		$this->db->where('multiplier', $multiplier);
 
 		$query = $this->db->get('shop_bands', 1);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -380,7 +380,7 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_modifiers($multiplier = '')
@@ -400,7 +400,7 @@ class Shop_model extends CI_Model {
 
 		$this->db->order_by('bandOrder', 'asc');
 		$this->db->order_by('shop_modifiers.multiplier', 'asc');
-		
+
 		$query = $this->db->get('shop_modifiers');
 
 		if ($query->num_rows())
@@ -410,23 +410,23 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_modifier($modifierID)
 	{
 		// default where
 		$this->db->where('shop_modifiers.siteID', $this->siteID);
-		
+
 		// get category by ID
 		$this->db->where('modifierID', $modifierID);
 
 		// join band
 		$this->db->select('bandName, shop_modifiers.*', FALSE);
 		$this->db->join('shop_bands', 'shop_bands.bandID = shop_modifiers.bandID');
-		
+
 		$query = $this->db->get('shop_modifiers', 1);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -434,23 +434,23 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_modifier_by_multiplier($multiplier = '')
 	{
 		// default where
 		$this->db->where('shop_modifiers.siteID', $this->siteID);
-		
+
 		// where multiplier
 		$this->db->where('shop_modifiers.multiplier', $multiplier);
 
 		// join band
 		$this->db->select('bandName, shop_modifiers.*', FALSE);
 		$this->db->join('shop_bands', 'shop_bands.bandID = shop_modifiers.bandID');
-		
+
 		$query = $this->db->get('shop_modifiers', 1);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -458,18 +458,18 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_postages()
 	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID));
-		
+
 		$this->db->order_by('total', 'asc');
-		
+
 		$query = $this->db->get('shop_postages');
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -477,19 +477,19 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_postage($postageID)
 	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID));
-		
+
 		// get category by ID
 		$this->db->where('postageID', $postageID);
-		
+
 		$query = $this->db->get('shop_postages', 1);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -497,20 +497,20 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_products($catID = '', $search = '', $featured = FALSE, $limit = '')
 	{
 		// set limit from uri if set
 		$limit = (!$limit && $limit != 'all') ? $this->siteVars['shopItemsPerPage'] : $limit;
-		
+
 		// get cat IDs
 		if ($catID && !$productsArray = $this->get_catmap_product_ids($catID))
 		{
 			return FALSE;
 		}
-				
+
 		// start cache
 		$this->db->start_cache();
 
@@ -518,27 +518,27 @@ class Shop_model extends CI_Model {
 		if ($catID)
 		{
 			// where category
-			$this->db->where_in('productID', $productsArray);		
+			$this->db->where_in('productID', $productsArray);
 		}
-		
+
 		// only select products for this admin user
 		if ($this->session->userdata('session_admin') && !@in_array('shop_all', $this->permission->permissions))
 		{
 			$this->db->where('userID', $this->session->userdata('userID'));
 		}
-		
+
 		// get published products for admin
 		if ($this->uri->segment(1) != 'admin')
 		{
 			$this->db->where('published', 1);
 		}
-		
+
 		// search
 		if ($search)
 		{
 			$this->db->where('(productName LIKE "%'.$this->db->escape_like_str($search).'%" OR subtitle LIKE "%'.$this->db->escape_like_str($search).'%" OR description LIKE "%'.$this->db->escape_like_str($search).'%" OR catalogueID LIKE "%'.$this->db->escape_like_str($search).'%")');
 		}
-		
+
 		// featured
 		if ($featured)
 		{
@@ -572,13 +572,13 @@ class Shop_model extends CI_Model {
 			}
 			$this->db->order_by('dateCreated','desc');
 		}
-		
+
 		// default wheres
 		$this->db->where(array('shop_products.siteID' => $this->siteID, 'deleted' => 0));
-		
+
 		// stop cache
 		$this->db->stop_cache();
-			
+
 		// get total rows
 		$query = $this->db->get('shop_products');
 		$totalRows = $query->num_rows();
@@ -586,10 +586,10 @@ class Shop_model extends CI_Model {
 		// init paging
 		$this->core->set_paging($totalRows, $limit);
 		$query = $this->db->get('shop_products', $limit, $this->pagination->offset);
-				
+
 		// flush cache
-		$this->db->flush_cache();		
-			
+		$this->db->flush_cache();
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -599,7 +599,7 @@ class Shop_model extends CI_Model {
 			return FALSE;
 		}
 	}
-	
+
 	function get_products_by_tag($tag = '', $limit = '')
 	{
 		// set limit from uri if set
@@ -622,7 +622,7 @@ class Shop_model extends CI_Model {
 		{
 			$tagsArray[] = $tag['row_id'];
 		}
-		
+
 		// look for products
 		$this->db->where_in('productID', $tagsArray);
 
@@ -650,7 +650,7 @@ class Shop_model extends CI_Model {
 			$this->db->order_by('productOrder','asc');
 			$this->db->order_by('dateCreated','desc');
 		}
-		
+
 		// default wheres
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0, 'published' => 1));
 		$query = $this->db->get('shop_products', $limit, $this->pagination->offset);
@@ -659,14 +659,14 @@ class Shop_model extends CI_Model {
 
 		$this->db->where_in('productID', $tagsArray);
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0, 'published' => 1));
-		$query_total = $this->db->get('shop_products'); 
-		$config['total_rows'] = $query_total->num_rows();	
+		$query_total = $this->db->get('shop_products');
+		$config['total_rows'] = $query_total->num_rows();
 		$config['per_page'] = $limit;
 		$config['full_tag_open'] = '<div class="pagination"><p>';
 		$config['full_tag_close'] = '</p></div>';
 		$config['num_links'] = 3;
 		$this->pagination->initialize($config);
-			
+
 		if ($query->num_rows())
 		{
 			return $output;
@@ -676,25 +676,25 @@ class Shop_model extends CI_Model {
 			return FALSE;
 		}
 	}
-	
+
 	function get_catmap_product_ids($catID)
 	{
 		// get rows based on this category
 		$this->db->join('shop_cats', 'shop_cats.catID = shop_catmap.catID');
 		$this->db->where('shop_cats.catID', $catID);
-		
+
 		// get result
 		$result = $this->db->get('shop_catmap');
-		
+
 		if ($result->num_rows())
 		{
 			$cats = $result->result_array();
-			
+
 			foreach ($cats as $cat)
 			{
 				$productsArray[] = $cat['productID'];
 			}
-			
+
 			return $productsArray;
 		}
 		else
@@ -707,11 +707,11 @@ class Shop_model extends CI_Model {
 	{
 		$this->db->where('siteID', $this->siteID);
 		$this->db->where('deleted', 0);
-		
+
 		$this->db->order_by('productName','asc');
-		
+
 		$query = $this->db->get('shop_products');
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -725,25 +725,25 @@ class Shop_model extends CI_Model {
 	function get_latest_products($catSafe = '', $limit = 3)
 	{
 		$cat = $this->get_category_by_reference($catSafe);
-		
+
 		$this->db->where('shop_products.siteID', $this->siteID);
 		$this->db->where('shop_products.deleted', 0);
 		$this->db->where('shop_products.published', 1);
-		
+
 		if ($catSafe)
 		{
 			$this->db->where('shop_catmap.catID', $cat['catID']);
-			
+
 			$this->db->select('shop_products.*');
 
 			$this->db->join('shop_catmap', 'shop_catmap.productID = shop_products.productID');
 			$this->db->group_by('shop_products.productID');
 		}
-		
+
 		$this->db->order_by('shop_products.dateCreated', 'desc');
-		
+
 		$query = $this->db->get('shop_products', $limit);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -753,7 +753,7 @@ class Shop_model extends CI_Model {
 			return FALSE;
 		}
 	}
-	
+
 	function get_latest_featured_products($limit = 3)
 	{
 		$this->db->where('siteID', $this->siteID);
@@ -761,9 +761,9 @@ class Shop_model extends CI_Model {
 		$this->db->where('featured', 'Y');
 		$this->db->where('published', 1);
 		$this->db->order_by('productOrder','asc');
-		
+
 		$query = $this->db->get('shop_products', $limit);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -776,21 +776,29 @@ class Shop_model extends CI_Model {
 
 	function get_popular_products($limit = 3)
 	{
+		// where
 		$this->db->where('t1.siteID', $this->siteID, FALSE);
 		$this->db->where('t2.siteID', $this->siteID, FALSE);
-		$this->db->where('t3.siteID', $this->siteID, FALSE);				
+		$this->db->where('t3.siteID', $this->siteID, FALSE);
 		$this->db->where('t1.deleted', 0, FALSE);
 		$this->db->where('t1.published', 1, FALSE);
 		$this->db->where('t3.paid', 1, FALSE);
 
+		// select
 		$this->db->select('t1.*, count(*) as numProducts', FALSE);
-		$this->db->join('shop_orders t2', 't1 . productID = t2 . productID');
-		$this->db->join('shop_transactions t3', 't2 . transactionID = t3 . transactionID');		
-		
+
+		$this->db->from('shop_products t1');
+		$this->db->limit($limit);
+
+		// join
+		$this->db->join('shop_orders t2', 't1.productID = t2.productID');
+		$this->db->join('shop_transactions t3', 't2.transactionID = t3.transactionID');
+
+
 		$this->db->group_by('productID');
 		$this->db->order_by('numProducts', 'desc');
-				
-		$query = $this->db->get('shop_products t1', $limit);
+
+		$query = $this->db->get();
 
 		if ($query->num_rows())
 		{
@@ -806,9 +814,9 @@ class Shop_model extends CI_Model {
 	{
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0, 'published' => 1));
 		$this->db->order_by('views', 'desc');
-		
+
 		$query = $this->db->get('shop_products', $limit);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -818,27 +826,27 @@ class Shop_model extends CI_Model {
 			return FALSE;
 		}
 	}
-	
+
 	function get_similar_products($productID = '', $catID = '', $limit)
 	{
 		if (!$catID || !$productID)
 		{
 			return FALSE;
 		}
-		
+
 		$this->db->where('shop_products.siteID', $this->siteID);
 		$this->db->where('deleted', 0);
 		$this->db->where('published', 1);
 		$this->db->where('shop_products.productID !=', $productID);
-		
+
 		$this->db->where('shop_catmap.catID', $catID);
 		$this->db->join('shop_catmap', 'shop_catmap.productID = shop_products.productID');
 		$this->db->group_by('shop_products.productID');
-		
+
 		$this->db->order_by('dateCreated', 'random');
-		
+
 		$query = $this->db->get('shop_products', $limit);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -854,16 +862,16 @@ class Shop_model extends CI_Model {
 		if ($productID)
 		{
 			$this->db->where(array('shop_products.siteID' => $this->siteID, 'deleted' => 0));
-			
+
 			$this->db->where('shop_products.productID', $productID);
-						
+
 			// join and group
 			$this->db->select('shop_products.*');
 			$this->db->join('shop_catmap', 'shop_catmap.productID = shop_products.productID', 'left');
-			$this->db->group_by('shop_products.productID');	
-			
+			$this->db->group_by('shop_products.productID');
+
 			$query = $this->db->get('shop_products', 1);
-			
+
 			$output = $query->row_array();
 
 			return $output;
@@ -878,9 +886,9 @@ class Shop_model extends CI_Model {
 	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID, 'code' => $code, 'expiryDate >' => date("Y-m-d H:i:s")));
-		
+
 		$query = $this->db->get('shop_discounts', 1);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -888,19 +896,19 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_discount($discountID)
 	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID));
-		
+
 		// get category by ID
 		$this->db->where('discountID', $discountID);
-		
+
 		$query = $this->db->get('shop_discounts', 1);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -908,7 +916,7 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_reviews($productID = '')
@@ -920,24 +928,30 @@ class Shop_model extends CI_Model {
 			$this->db->where('t1.active', 1, FALSE);
 		}
 
+		// Select
 		$this->db->select('t1.*, t2.productName');
-		
+
+		$this->db->from('shop_reviews t1');
+		$this->db->limit(50);
+
 		$this->db->where('t1.deleted', 0, FALSE);
 		$this->db->where('t1.siteID', $this->siteID, FALSE);
 
-		$this->db->join('shop_products t2', 't2.productID = t1 . productID');
-		
-		$this->db->order_by('t1 . dateCreated', 'desc');
-		
-		$query = $this->db->get('shop_reviews t1', 50);
-		
+    // join
+		$this->db->join('shop_products t2', 't2.productID = t1.productID');
+
+		$this->db->order_by('t1.dateCreated', 'desc');
+
+    // get em
+		$query = $this->db->get();
+
 		$reviews = array();
-		
+
 		if ( $query->num_rows() > 0)
 		{
 			$reviews = $query->result_array();
 		}
-		
+
 		return $reviews;
 	}
 
@@ -945,9 +959,9 @@ class Shop_model extends CI_Model {
 	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0));
-		
+
 		$query = $this->db->get('files');
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -955,7 +969,7 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_file($fileID)
@@ -964,9 +978,9 @@ class Shop_model extends CI_Model {
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0));
 
 		$this->db->where('fileID', $fileID);
-		
+
 		$query = $this->db->get('files', 1);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -976,16 +990,16 @@ class Shop_model extends CI_Model {
 			return FALSE;
 		}
 	}
-	
+
 	function get_upsells()
 	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0));
-				
+
 		$this->db->order_by('upsellOrder', 'desc');
-		
+
 		$query = $this->db->get('shop_upsells');
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -993,21 +1007,21 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_upsell($upsellID)
 	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0));
-		
+
 		// get upsell by ID
 		$this->db->where('upsellID', $upsellID);
-		
+
 		$this->db->order_by('upsellOrder', 'asc');
-		
+
 		$query = $this->db->get('shop_upsells', 1);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -1015,13 +1029,13 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function captcha()
 	{
- 		$this->load->plugin('captcha');		
-		
+ 		$this->load->plugin('captcha');
+
 		// load captcha
 		$syls = array('ble', 'ond', 'san', 'tle', 'ile', 'bre', 'aps', 'que', 'yil', 'ste', 'tre', 'ale', 'sho', 'spi', 'dal', 'clo', 'fal', 'gul', 'she');
 		$randSyls = array_rand($syls, 2);
@@ -1030,7 +1044,7 @@ class Shop_model extends CI_Model {
 		{
 			$randomWord .= $syls[$x];
 		}
-		
+
 		$vals = array(
 					'word'		 => $randomWord,
 					'img_path'	 => './static/uploads/captcha/',
@@ -1058,7 +1072,7 @@ class Shop_model extends CI_Model {
 	{
 		$this->db->set('views', 'views+1', FALSE);
 		$this->db->where('productID', $productID);
-		$this->db->where('siteID', $this->siteID);		
+		$this->db->where('siteID', $this->siteID);
 		$this->db->update('shop_products');
 	}
 
@@ -1066,7 +1080,7 @@ class Shop_model extends CI_Model {
 	{
 		$this->db->where(array('productID' => $productID));
 		$this->db->order_by('variationID');
-		
+
 		if ($type)
 		{
 			$this->db->where(array('type' => $type));
@@ -1086,7 +1100,7 @@ class Shop_model extends CI_Model {
 	function get_variation($variationID)
 	{
 		$query = $this->db->get_where('shop_variations', array('variationID' => $variationID));
-		
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -1116,7 +1130,7 @@ class Shop_model extends CI_Model {
 	{
 		// get the master array (unserialize) then get the info from db
 		$keys = unserialize($key);
-		$product = $this->get_product($keys['productID']);				
+		$product = $this->get_product($keys['productID']);
 		$variation1 = @$this->get_variation($keys['variation1']);
 		$variation2 = @$this->get_variation($keys['variation2']);
 		$variation3 = @$this->get_variation($keys['variation3']);
@@ -1177,7 +1191,7 @@ class Shop_model extends CI_Model {
 			{
 				$discount = $this->get_discounts($this->session->userdata('discountCode'));
 			}
-						
+
 			// create new unserialized array
 			foreach ($cartSession as $key => $quantity)
 			{
@@ -1193,18 +1207,18 @@ class Shop_model extends CI_Model {
 					$postageSubtotal += ($productPrice * $cart[$key]['quantity']);
 				}
 
-				// check the quantity is 1 for files	
+				// check the quantity is 1 for files
 				elseif ($cart[$key]['fileID'])
 				{
 					$cart[$key]['quantity'] = 1;
-				}				
+				}
 
 				// calculate discounts
 				if (isset($discount))
 				{
 					// calculate on product
 					if ($discount['type'] == 'P')
-					{	
+					{
 						$objectArray = explode(',', $discount['objectID']);
 						if (@in_array($cart[$key]['productID'], $objectArray))
 						{
@@ -1214,27 +1228,27 @@ class Shop_model extends CI_Model {
 							if ($discount['base'] == 'P')
 							{
 								$productPrice -= $productDiscount;
-								
+
 								// set total discounted amount
 								$discounts += ($productDiscount * $cart[$key]['quantity']);
 							}
 							else
 							{
 								$discounts = $productDiscount;
-							}	
+							}
 						}
 					}
-					
+
 					// calculate on category ID
 					if ($discount['type'] == 'C' && $discount['objectID'] == $cart[$key]['catID'])
 					{
 						$productDiscount = ($discount['modifier'] == 'A') ? $discount['discount'] : round($productPrice * $discount['discount'] / 100, 2);
-						
+
 						// find out if the discount is coming off the total price or at a product level
 						if ($discount['base'] == 'P')
 						{
 							$productPrice -= $productDiscount;
-							
+
 							// set total discounted amount
 							$discounts += ($productDiscount * $cart[$key]['quantity']);
 						}
@@ -1250,8 +1264,8 @@ class Shop_model extends CI_Model {
 			}
 
 			// make sure the postage sub total has not gone in to minus
-			if ($postageSubtotal < 0) $postageSubtotal = 0;			
-				
+			if ($postageSubtotal < 0) $postageSubtotal = 0;
+
 			// calculate postage and packing
 			if ($this->siteVars['shopFreePostage'])
 			{
@@ -1265,7 +1279,7 @@ class Shop_model extends CI_Model {
 				{
 					$postage = 0;
 				}
-				
+
 				// free postage over a certain rate (for shipping bands 1 only)
 				elseif ($this->siteVars['shopFreePostageRate'] && $multiplier == 1 && $postageSubtotal >= $this->siteVars['shopFreePostageRate'])
 				{
@@ -1300,7 +1314,7 @@ class Shop_model extends CI_Model {
 			{
 				$subtotal += $donation;
 			}
-			
+
 			// get tax
 			if ($this->siteVars['shopTax'] > 0)
 			{
@@ -1313,7 +1327,7 @@ class Shop_model extends CI_Model {
 					$tax = round(($subtotal+$postage) * $this->siteVars['shopTaxRate'] / 100, 2);
 				}
 			}
-			
+
 			// calculate discount on total
 			if (isset($discount) && $discount['base'] == 'T')
 			{
@@ -1340,7 +1354,7 @@ class Shop_model extends CI_Model {
 			return FALSE;
 		}
 	}
-	
+
 	function get_product_ids_in_cart()
 	{
 		// get session data for cart
@@ -1351,20 +1365,20 @@ class Shop_model extends CI_Model {
 		{
 			// set product IDs array
 			$productIDs = array();
-			
+
 			// create new unserialized array
 			foreach ($cartSession as $key => $quantity)
 			{
 				// get product info
 				$cart[$key] = $this->unpack_item($key, $quantity);
-				
+
 				// make sure quantity is not greater than 1
 				if ($quantity == 1)
 				{
 					$productIDs[] = $cart[$key]['productID'];
 				}
 			}
-			
+
 			return $productIDs;
 		}
 		else
@@ -1379,17 +1393,17 @@ class Shop_model extends CI_Model {
 		{
 			$quantity = 1;
 		}
-		
+
 		if ($productID)
 		{
 			$cart = $this->session->userdata('cart');
-	
+
 			$variation1 = ($variation1) ? $variation1 : $this->input->post('variation1');
 			$variation2 = ($variation2) ? $variation2 : $this->input->post('variation2');
 			$variation3 = ($variation3) ? $variation3 : $this->input->post('variation3');
-			
+
 			$key = serialize(array('productID' => $productID, 'variation1' => $variation1, 'variation2' => $variation2, 'variation3' => $variation3));
-			
+
 			if (isset($cart[$key]))
 			{
 				$cart[$key] += $quantity;
@@ -1400,7 +1414,7 @@ class Shop_model extends CI_Model {
 				$cart[$key] = $quantity;
 				$this->session->set_userdata('cart', $cart);
 			}
-			
+
 			return true;
 		}
 		else
@@ -1413,16 +1427,16 @@ class Shop_model extends CI_Model {
 	{
 		$cart = $this->session->userdata('cart');
 
-		$key = $this->core->decode($key);		
+		$key = $this->core->decode($key);
 		unset($cart[$key]);
-		
+
 		$this->session->set_userdata('cart', $cart);
-		
+
 		return true;
-	}	
-	
+	}
+
 	function update_cart($key, $quantity)
-	{	
+	{
 		if ($quantity)
 		{
 			$cart = $this->session->userdata('cart');
@@ -1436,9 +1450,9 @@ class Shop_model extends CI_Model {
 	function get_user()
 	{
 		if ($userID = $this->session->userdata('userID'))
-		{			
+		{
 			$query = $this->db->get_where('users', array('userID' => $userID), 1);
-			
+
 			$output = $query->row_array();
 
 			return $output;
@@ -1452,8 +1466,8 @@ class Shop_model extends CI_Model {
 	function get_user_by_email($email)
 	{
 		// default wheres
-		$this->db->where('siteID', $this->siteID);		
-		
+		$this->db->where('siteID', $this->siteID);
+
 		$this->db->where('email', $email);
 
 		// grab
@@ -1466,14 +1480,14 @@ class Shop_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function insert_transaction()
 	{
 		$cartSession = $this->session->userdata('cart');
 		$cart = $this->load_cart();
-		
+
 		$set = array(
 			'dateCreated' => date("Y-m-d H:i:s"),
 			'userID' => $this->session->userdata('userID'),
@@ -1485,10 +1499,10 @@ class Shop_model extends CI_Model {
 			'discountCode' => ($this->session->userdata('discountCode')) ? $this->session->userdata('discountCode') : '',
 			'notes' => ($this->session->userdata('shippingNotes')) ? $this->session->userdata('shippingNotes') : ''
 		);
-			
+
 		$this->db->set($set);
 		$this->db->insert('shop_transactions');
-		
+
 		// Get the ID number of the new record
 		$transactionID = $this->db->insert_id();
 
@@ -1502,8 +1516,8 @@ class Shop_model extends CI_Model {
 		// insert products ordered
 		foreach($cartSession as $key => $quantity)
 		{
-			$keys = unserialize($key);						
-			
+			$keys = unserialize($key);
+
 			$set = array(
 				'`dateCreated`' => date("Y-m-d H:i:s"),
 				'`transactionID`' => $transactionID,
@@ -1520,13 +1534,13 @@ class Shop_model extends CI_Model {
 
 		return $data;
 	}
-	
+
 	function add_variation($productID, $type, $variation = '', $varPrice = 0)
 	{
 		$this->db->set('productID', $productID);
 		$this->db->set('type', $type);
 		$this->db->set('siteID', $this->siteID);
-		
+
 		if ($variation)
 		{
 			$this->db->set('variation', $variation);
@@ -1568,8 +1582,8 @@ class Shop_model extends CI_Model {
 
 		// select based on requested status
 		if ($status != 'ALL' && $status != 'N')
-		{			
-			if (array_key_exists($status, $this->statusArray)) 
+		{
+			if (array_key_exists($status, $this->statusArray))
 			{
 				$this->db->where('trackingStatus', $status);
 			}
@@ -1590,9 +1604,9 @@ class Shop_model extends CI_Model {
 		{
 			$this->db->where('paid', 1);
 		}
-		
+
 		$this->db->where('shop_transactions.siteID', $this->siteID);
-		
+
 		// search
 		if ($search)
 		{
@@ -1642,7 +1656,7 @@ class Shop_model extends CI_Model {
 		{
 			$this->db->where('shop_transactions.userID', $userID);
 		}
-		
+
 		$query = $this->db->get('shop_transactions', 1);
 
 		if ($query->num_rows())
@@ -1660,7 +1674,7 @@ class Shop_model extends CI_Model {
 		$this->db->join('users', 'shop_transactions.userID = users.userID', 'left', FALSE);
 		$this->db->where('shop_transactions.transactionCode', $orderID);
 		$this->db->where('shop_transactions.siteID', $this->siteID);
-		
+
 		$query = $this->db->get('shop_transactions', 1);
 
 		if ($query->num_rows())
@@ -1671,24 +1685,24 @@ class Shop_model extends CI_Model {
 		{
 			return FALSE;
 		}
-	}	
+	}
 
 	function get_item_orders($transactionID)
 	{
 		$this->db->where('shop_orders.transactionID', $transactionID);
-		
+
 		$query = $this->db->get('shop_orders');
 
 		if ($query->num_rows())
 		{
 			$result = $query->result_array();
-			
+
 			// create new unserialized array
 			foreach ($result as $row)
 			{
 				$cart[$row['key']] = $this->unpack_item($row['key'], $row['quantity']);
 			}
-			
+
 			return $cart;
 		}
 		else
@@ -1699,17 +1713,17 @@ class Shop_model extends CI_Model {
 
 	function get_new_orders()
 	{
-		$this->db->where('siteID', $this->siteID);		
+		$this->db->where('siteID', $this->siteID);
 		$this->db->where('viewed', 0);
 		$this->db->where('paid', 1);
 		$this->db->where('dateCreated >', date("Y-m-d H:i:s", strtotime('-3 days')));
-		
+
 		$query = $this->db->get('shop_transactions');
 
 		if ($query->num_rows())
 		{
 			$result = $query->result_array();
-			
+
 			return $result;
 		}
 		else
@@ -1722,7 +1736,7 @@ class Shop_model extends CI_Model {
 	{
 		$this->db->where('siteID', $this->siteID);
 		$this->db->where('subscriptionID', $subscriptionID);
-			
+
 		$query = $this->db->get('subscriptions', 1);
 
 		if ($query->num_rows() > 0)
@@ -1739,7 +1753,7 @@ class Shop_model extends CI_Model {
 	{
 		$this->db->where('siteID', $this->siteID);
 		$this->db->where('subscriptionRef', $subscriptionRef);
-			
+
 		$query = $this->db->get('subscriptions', 1);
 
 		if ($query->num_rows() > 0)
@@ -1756,14 +1770,14 @@ class Shop_model extends CI_Model {
 	{
 		$this->db->where('siteID', $this->siteID);
 
-		// search		
+		// search
 		if ($q)
 		{
 			$this->db->where('(email LIKE "%'.$this->db->escape_like_str($q).'%" OR fullName LIKE "%'.$this->db->escape_like_str($q).'%" OR referenceID LIKE "%'.$this->db->escape_like_str($q).'%")');
 		}
-			
+
 		$query = $this->db->get('subscribers');
-		
+
 		if ($query->num_rows() > 0)
 		{
 			return $query->result_array();
@@ -1779,9 +1793,9 @@ class Shop_model extends CI_Model {
 		$this->db->where('siteID', $this->siteID);
 		$this->db->where('subscriptionID', $subscriptionID);
 		$this->db->where('active', 1);
-			
+
 		$query = $this->db->get('subscribers');
-		
+
 		if ($query->num_rows() > 0)
 		{
 			return $query->num_rows();
@@ -1796,7 +1810,7 @@ class Shop_model extends CI_Model {
 	{
 		$this->db->where('siteID', $this->siteID);
 		$this->db->where('subscriberID', $subscriberID);
-			
+
 		$query = $this->db->get('subscribers', 1);
 
 		if ($query->num_rows() > 0)
@@ -1816,8 +1830,8 @@ class Shop_model extends CI_Model {
 
 		$this->db->select('t2.*, paymentID, t1.dateCreated as paymentDate, t1.amount as paymentAmount, t3.currency as currency', FALSE);
 		$this->db->join('subscribers t2', 't2.referenceID = t1 . referenceID');
-		$this->db->join('subscriptions t3', 't3.subscriptionID = t2 . subscriptionID');		
-			
+		$this->db->join('subscriptions t3', 't3.subscriptionID = t2 . subscriptionID');
+
 		$query = $this->db->get('sub_payments t1');
 
 		if ($query->num_rows() > 0)
@@ -1837,8 +1851,8 @@ class Shop_model extends CI_Model {
 
 		$this->db->select('t2.*, t1.dateCreated as paymentDate, t1.amount as paymentAmount, t3.currency as currency', FALSE);
 		$this->db->join('subscribers t2', 't2.referenceID = t1 . referenceID');
-		$this->db->join('subscriptions t3', 't3.subscriptionID = t2 . subscriptionID');		
-			
+		$this->db->join('subscriptions t3', 't3.subscriptionID = t2 . subscriptionID');
+
 		$query = $this->db->get('sub_payments t1', 1);
 
 		if ($query->num_rows() > 0)
@@ -1850,23 +1864,23 @@ class Shop_model extends CI_Model {
 			return FALSE;
 		}
 	}
-	
+
 	function minus_stock($productID, $quantity)
 	{
 		$this->db->set('stock', 'stock-'.$quantity, FALSE);
 		$this->db->where('productID', $productID);
-		$this->db->where('siteID', $this->siteID);		
+		$this->db->where('siteID', $this->siteID);
 		$this->db->update('shop_products');
-		
+
 		$product = $this->get_product($productID);
 		if ($product['stock'] == 0)
 		{
 			$this->db->set('status', 'O');
 			$this->db->where('productID', $productID);
-			$this->db->where('siteID', $this->siteID);		
+			$this->db->where('siteID', $this->siteID);
 			$this->db->update('shop_products');
 		}
-		
+
 		return TRUE;
 	}
 
@@ -1875,7 +1889,7 @@ class Shop_model extends CI_Model {
 		$this->db->set('viewed', '1');
 		$this->db->where('transactionID', $transactionID);
 		$this->db->update('shop_transactions');
-		
+
 		return TRUE;
 	}
 
@@ -1885,27 +1899,27 @@ class Shop_model extends CI_Model {
 		$this->db->set('expiryDate', date("Y-m-d H:i:s", strtotime('+7 days')));
 		$this->db->where('transactionID', $transactionID);
 		$this->db->update('shop_transactions');
-		
+
 		return TRUE;
 	}
-	
+
 	function init_sagepay()
-	{	
+	{
 		// parse the paypal URL
-		$url_parsed = parse_url($this->gateway_url);		  
+		$url_parsed = parse_url($this->gateway_url);
 
 		// generate the post string from the _POST vars aswell as load the
 		// _POST vars into an arry so we can play with them from the calling
 		// script.
-		$post_string = '';	
+		$post_string = '';
 		if ($_POST)
 		{
 			foreach ($_POST as $field=>$value)
-			{ 
+			{
 				$this->response_data[$field] = $value;
-				$post_string .= $field.'='.urlencode(stripslashes($value)).'&'; 
+				$post_string .= $field.'='.urlencode(stripslashes($value)).'&';
 			}
-		}		
+		}
 		$post_string.="vendor=".$this->vendor."&VPSProtocol=2.23"; // append ipn command
 
 		set_time_limit(60);
@@ -1915,7 +1929,7 @@ class Shop_model extends CI_Model {
 
 		// Open the cURL session
 		$curlSession = curl_init();
-		
+
 		// Set the URL
 		curl_setopt ($curlSession, CURLOPT_URL, $this->gateway_url);
 		// No headers, please
@@ -1925,18 +1939,18 @@ class Shop_model extends CI_Model {
 		// Set the fields for the POST
 		curl_setopt ($curlSession, CURLOPT_POSTFIELDS, $post_string);
 		// Return it direct, don't print it out
-		curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1); 
+		curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
 		// This connection will timeout in 30 seconds
-		curl_setopt($curlSession, CURLOPT_TIMEOUT,30); 
+		curl_setopt($curlSession, CURLOPT_TIMEOUT,30);
 		//The next two lines must be present for the kit to work with newer version of cURL
 		//You should remove them if you have any problems in earlier versions of cURL
 		    curl_setopt($curlSession, CURLOPT_SSL_VERIFYPEER, FALSE);
 		    curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 1);
-		
+
 		//Send the request and store the result in an array
-		
+
 		$rawresponse = curl_exec($curlSession);
-		//Store the raw response for later as it's useful to see for integration and understanding 
+		//Store the raw response for later as it's useful to see for integration and understanding
 		$_SESSION["rawresponse"]=$rawresponse;
 		//Split response into name=value pairs
 		$response = preg_split('/\n/', $rawresponse);
@@ -1946,7 +1960,7 @@ class Shop_model extends CI_Model {
 			$output['Status'] = "FAIL";
 			$output['StatusDetail'] = curl_error($curlSession);
 		}
-		
+
 		// Close the cURL session
 		curl_close ($curlSession);
 
@@ -1977,12 +1991,12 @@ class Shop_model extends CI_Model {
 	function validate_ipn()
 	{
 		// parse the paypal URL
-		$url_parsed = parse_url($this->paypal_url);		  
+		$url_parsed = parse_url($this->paypal_url);
 
 		// generate the post string from the _POST vars aswell as load the
 		// _POST vars into an arry so we can play with them from the calling
 		// script.
-		$post_string = 'cmd=_notify-validate&';	
+		$post_string = 'cmd=_notify-validate&';
 		if ($_POST)
 		{
 			foreach ($_POST as $field => $value)
@@ -1990,38 +2004,38 @@ class Shop_model extends CI_Model {
 				// tidy value
 				$value = trim(str_replace("\n", "", $value));
 				$value = trim(str_replace("\t", "", $value));
-				
+
 				// build string
 				$this->response_data[$field] = $value;
-				$post_string .= $field.'='.urlencode(stripslashes($value)).'&'; 
+				$post_string .= $field.'='.urlencode(stripslashes($value)).'&';
 			}
 		}
 		$post_string = substr($post_string, 0, -1); // remove trailing &
 
 		// open the connection to paypal
-		$fp = fsockopen($url_parsed['host'],"80",$err_num,$err_str,30); 
+		$fp = fsockopen($url_parsed['host'],"80",$err_num,$err_str,30);
 		if(!$fp)
 		{
 			// could not open the connection.  If loggin is on, the error message
 			// will be in the log.
 			$this->last_error = "fsockopen error no. $errnum: $errstr";
 			$this->log_response_results(FALSE);
-			
+
 			return FALSE;
-		} 
+		}
 		else
-		{ 
+		{
 			// Post the data back to paypal
-			fputs($fp, "POST $url_parsed[path] HTTP/1.1\r\n"); 
-			fputs($fp, "Host: $url_parsed[host]\r\n"); 
-			fputs($fp, "Content-type: application/x-www-form-urlencoded\r\n"); 
-			fputs($fp, "Content-length: ".strlen($post_string)."\r\n"); 
-			fputs($fp, "Connection: close\r\n\r\n"); 
-			fputs($fp, $post_string . "\r\n\r\n"); 
+			fputs($fp, "POST $url_parsed[path] HTTP/1.1\r\n");
+			fputs($fp, "Host: $url_parsed[host]\r\n");
+			fputs($fp, "Content-type: application/x-www-form-urlencoded\r\n");
+			fputs($fp, "Content-length: ".strlen($post_string)."\r\n");
+			fputs($fp, "Connection: close\r\n\r\n");
+			fputs($fp, $post_string . "\r\n\r\n");
 
 			// loop through the response from the server and append to variable
 			while(!feof($fp))
-				$this->response .= fgets($fp, 1024); 
+				$this->response .= fgets($fp, 1024);
 
 			fclose($fp); // close connection
 		}
@@ -2039,8 +2053,8 @@ class Shop_model extends CI_Model {
 				$this->email->to($this->site->config['siteEmail']);
 				$this->email->subject('A Subscription Expired on '.$this->site->config['siteName']);
 				$this->email->message("Dear Administrator,\n\nA user's subscription has expired on ".$this->site->config['siteName'].".\n\nTheir reference ID is:\t#".$this->response_data['subscr_id']."\n\n".$this->site->config['siteURL']);
-				$this->email->from($this->site->config['siteEmail'], $this->site->config['siteName']);			
-				$this->email->send();				
+				$this->email->from($this->site->config['siteEmail'], $this->site->config['siteName']);
+				$this->email->send();
 
 				return FALSE;
 			}
@@ -2048,29 +2062,29 @@ class Shop_model extends CI_Model {
 			{
 				// Valid IPN transaction.
 				$this->log_response_results(true);
-				
+
 				return TRUE;
 			}
-		} 
-		else 
+		}
+		else
 		{
 			// Invalid IPN transaction.  Check the log for details.
 			$this->last_error = 'IPN Validation Failed.';
 			$this->log_response_results(FALSE);
-			
+
 			return FALSE;
 		}
 	}
-	
+
 	function validate_paypalpro()
 	{
 		// parse the paypal URL
-		$url_parsed = parse_url($this->gateway_url);		  
+		$url_parsed = parse_url($this->gateway_url);
 
 		// generate the post string from the _POST vars aswell as load the
 		// _POST vars into an arry so we can play with them from the calling
 		// script.
-		$post_string = '';	
+		$post_string = '';
 		if ($_POST)
 		{
 			$expMonth = '';
@@ -2079,8 +2093,8 @@ class Shop_model extends CI_Model {
 			{
 				// tidy value
 				$value = trim(str_replace("\n", "", $value));
-				$value = trim(str_replace("\t", "", $value));				
-				
+				$value = trim(str_replace("\t", "", $value));
+
 				// build expiry dates
 				if ($field == 'expMonth')
 				{
@@ -2090,10 +2104,10 @@ class Shop_model extends CI_Model {
 				{
 					$expYear = $value;
 				}
-				
+
 				// build string
 				$this->response_data[$field] = $value;
-				$post_string .= $field.'='.urlencode(stripslashes($value)).'&'; 
+				$post_string .= $field.'='.urlencode(stripslashes($value)).'&';
 			}
 			$post_string.='EXPDATE='.$expMonth.$expYear.'&';
 		}
@@ -2106,7 +2120,7 @@ class Shop_model extends CI_Model {
 
 		// Open the cURL session
 		$curlSession = curl_init();
-		
+
 		// Set the URL
 		curl_setopt ($curlSession, CURLOPT_URL, $this->gateway_url);
 		// No headers, please
@@ -2116,18 +2130,18 @@ class Shop_model extends CI_Model {
 		// Set the fields for the POST
 		curl_setopt ($curlSession, CURLOPT_POSTFIELDS, $post_string);
 		// Return it direct, don't print it out
-		curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1); 
+		curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
 		// This connection will timeout in 30 seconds
-		curl_setopt($curlSession, CURLOPT_TIMEOUT,30); 
+		curl_setopt($curlSession, CURLOPT_TIMEOUT,30);
 		//The next two lines must be present for the kit to work with newer version of cURL
 		//You should remove them if you have any problems in earlier versions of cURL
 		    curl_setopt($curlSession, CURLOPT_SSL_VERIFYPEER, FALSE);
 		    curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 1);
-		
+
 		//Send the request and store the result in an array
-		
+
 		$rawresponse = curl_exec($curlSession);
-		//Store the raw response for later as it's useful to see for integration and understanding 
+		//Store the raw response for later as it's useful to see for integration and understanding
 		$_SESSION["rawresponse"]=$rawresponse;
 		//Split response into name=value pairs
 		$response = preg_split("/&/", $rawresponse);
@@ -2138,7 +2152,7 @@ class Shop_model extends CI_Model {
 			$output['Status'] = "FAIL";
 			$output['StatusDetail'] = curl_error($curlSession);
 		}
-		
+
 		// Close the cURL session
 		curl_close ($curlSession);
 
@@ -2166,16 +2180,16 @@ class Shop_model extends CI_Model {
 			return FALSE;
 		}
 	}
-	
+
 	function validate_authorize()
 	{
 		// parse the paypal URL
-		$url_parsed = parse_url($this->gateway_url);		  
+		$url_parsed = parse_url($this->gateway_url);
 
 		// generate the post string from the _POST vars aswell as load the
 		// _POST vars into an arry so we can play with them from the calling
 		// script.
-		$post_string = '';	
+		$post_string = '';
 		if ($_POST)
 		{
 			$expMonth = '';
@@ -2184,8 +2198,8 @@ class Shop_model extends CI_Model {
 			{
 				// tidy value
 				$value = trim(str_replace("\n", "", $value));
-				$value = trim(str_replace("\t", "", $value));				
-				
+				$value = trim(str_replace("\t", "", $value));
+
 				// build expiry dates
 				if ($field == 'expMonth')
 				{
@@ -2195,10 +2209,10 @@ class Shop_model extends CI_Model {
 				{
 					$expYear = $value;
 				}
-				
+
 				// build string
 				$this->response_data[$field] = $value;
-				$post_string .= $field.'='.urlencode(stripslashes($value)).'&'; 
+				$post_string .= $field.'='.urlencode(stripslashes($value)).'&';
 			}
 			$post_string.='x_exp_date='.$expMonth.$expYear.'&';
 		}
@@ -2211,7 +2225,7 @@ class Shop_model extends CI_Model {
 
 		// Open the cURL session
 		$curlSession = curl_init();
-		
+
 		// Set the URL
 		curl_setopt ($curlSession, CURLOPT_URL, $this->gateway_url);
 		// No headers, please
@@ -2221,18 +2235,18 @@ class Shop_model extends CI_Model {
 		// Set the fields for the POST
 		curl_setopt ($curlSession, CURLOPT_POSTFIELDS, $post_string);
 		// Return it direct, don't print it out
-		curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1); 
+		curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
 		// This connection will timeout in 30 seconds
-		curl_setopt($curlSession, CURLOPT_TIMEOUT,30); 
+		curl_setopt($curlSession, CURLOPT_TIMEOUT,30);
 		//The next two lines must be present for the kit to work with newer version of cURL
 		//You should remove them if you have any problems in earlier versions of cURL
 		    curl_setopt($curlSession, CURLOPT_SSL_VERIFYPEER, FALSE);
 		    curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 1);
-		
+
 		//Send the request and store the result in an array
-		
+
 		$rawresponse = curl_exec($curlSession);
-		//Store the raw response for later as it's useful to see for integration and understanding 
+		//Store the raw response for later as it's useful to see for integration and understanding
 		$_SESSION["rawresponse"]=$rawresponse;
 		//Split response into name=value pairs
 		$response = preg_split("/\|/", $rawresponse);
@@ -2242,7 +2256,7 @@ class Shop_model extends CI_Model {
 			// If it wasn't...
 			$this->errors = curl_error($curlSession);
 		}
-		
+
 		// Close the cURL session
 		curl_close ($curlSession);
 
@@ -2260,12 +2274,12 @@ class Shop_model extends CI_Model {
 	}
 
 	function validate_rbsworldpay()
-	{		
-		// get post	from worldpay	
+	{
+		// get post	from worldpay
 		if ($_POST)
 		{
 			$output = '';
-			
+
 			// get data
 			foreach ($_POST as $field=>$value)
 			{
@@ -2282,13 +2296,13 @@ class Shop_model extends CI_Model {
 
 				// cancel subscriber
 				$this->cancel_subscriber();
-				
+
 				// load email lib and email admin
 				$this->load->library('email');
 				$this->email->to($this->site->config['siteEmail']);
 				$this->email->subject('subscriber Cancellation on '.$this->site->config['siteName']);
 				$this->email->message("Dear Administrator,\n\nA user has cancelled their subscriber on ".$this->site->config['siteName'].".\n\nTheir reference ID is:\t#".$this->response_data['futurePayId']."\n\n".$this->site->config['siteURL']);
-				$this->email->from($this->site->config['siteEmail'], $this->site->config['siteName']);			
+				$this->email->from($this->site->config['siteEmail'], $this->site->config['siteName']);
 				$this->email->send();
 
 				return FALSE;
@@ -2297,14 +2311,14 @@ class Shop_model extends CI_Model {
 			// is valid
 			elseif ($this->response_data['transStatus'] == 'Y')
 			{
-				return TRUE;		 
-			} 
-			
+				return TRUE;
+			}
+
 			// an invalid response
-			else 
+			else
 			{
 				return FALSE;
-			}			
+			}
 		}
 		else
 		{
@@ -2313,12 +2327,12 @@ class Shop_model extends CI_Model {
 	}
 
 	function validate_sagepay()
-	{		
-		// get post	from worldpay	
+	{
+		// get post	from worldpay
 		if ($_POST)
 		{
 			$output = '';
-			
+
 			// get data
 			foreach ($_POST as $field=>$value)
 			{
@@ -2328,18 +2342,18 @@ class Shop_model extends CI_Model {
 
 			// get first line of status
 			$baseStatus = array_shift(preg_split("/ /", $this->response_data['Status']));
-	
+
 			// validate post
 			if ($baseStatus == 'OK')
 			{
 				return TRUE;
 			}
-			
+
 			// an invalid response
-			else 
+			else
 			{
 				return FALSE;
-			}			
+			}
 		}
 		else
 		{
@@ -2351,7 +2365,7 @@ class Shop_model extends CI_Model {
 	{
 		// validate payment
 		if ($this->site->config['shopGateway'] == 'paypal')
-		{			
+		{
 			if ($this->response_data['payment_status'] == 'Completed' && $this->response_data['txn_type'] == 'web_accept')
 			{
 				// set order reference ID and transaction ID
@@ -2361,8 +2375,8 @@ class Shop_model extends CI_Model {
 				$this->response_data['firstName'] = $this->response_data['first_name'];
 				$this->response_data['lastName'] = $this->response_data['last_name'];
 				$this->response_data['email'] = $this->response_data['payer_email'];
-				$this->response_data['shopEmail'] = $this->response_data['receiver_email'];				
-				
+				$this->response_data['shopEmail'] = $this->response_data['receiver_email'];
+
 				return TRUE;
 			}
 			else
@@ -2371,7 +2385,7 @@ class Shop_model extends CI_Model {
 			}
 		}
 		elseif ($this->site->config['shopGateway'] == 'paypalpro')
-		{			
+		{
 			if ($this->response_data['payment_status'] == 'Completed' && $this->response_data['txn_type'] == 'web_accept')
 			{
 				// set order reference ID and transaction ID
@@ -2379,29 +2393,29 @@ class Shop_model extends CI_Model {
 				$this->response_data['transactionID'] = $this->response_data['custom'];
 				$this->response_data['fullName'] = $this->response_data['first_name'].' '.$this->response_data['last_name'];
 				$this->response_data['firstName'] = $this->response_data['first_name'];
-				$this->response_data['lastName'] = $this->response_data['last_name'];				
+				$this->response_data['lastName'] = $this->response_data['last_name'];
 				$this->response_data['email'] = $this->response_data['payer_email'];
-				$this->response_data['shopEmail'] = $this->response_data['receiver_email'];				
-				
+				$this->response_data['shopEmail'] = $this->response_data['receiver_email'];
+
 				return TRUE;
 			}
 			else
 			{
 				return FALSE;
 			}
-		}			
+		}
 		elseif ($this->site->config['shopGateway'] == 'rbsworldpay')
-		{			
+		{
 			if (!$this->response_data['futurePayId'] && $this->response_data['amount'] > 0)
 			{
 				// set order reference ID and transaction ID
 				$this->response_data['orderID'] = $this->response_data['cartId'];
 				$this->response_data['transactionID'] = $this->response_data['MC_custom'];
 				$this->response_data['fullName'] = $this->response_data['name'];
-				$names = explode(' ', $this->response_data['name']); 
+				$names = explode(' ', $this->response_data['name']);
 				$this->response_data['firstName'] = @$names[0];
 				$this->response_data['lastName'] = @$names[1];
-				
+
 				return TRUE;
 			}
 			else
@@ -2410,12 +2424,12 @@ class Shop_model extends CI_Model {
 			}
 		}
 		elseif ($this->site->config['shopGateway'] == 'sagepay')
-		{			
+		{
 			if ($this->response_data['TxAuthNo'] > 0)
 			{
 				// set order reference ID and transaction ID
-				$this->response_data['orderID'] = $this->response_data['VendorTxCode'];		
-				
+				$this->response_data['orderID'] = $this->response_data['VendorTxCode'];
+
 				return TRUE;
 			}
 			else
@@ -2442,7 +2456,7 @@ class Shop_model extends CI_Model {
 				$this->response_data['firstName'] = $this->response_data['first_name'];
 				$this->response_data['lastName'] = $this->response_data['last_name'];
 				$this->response_data['email'] = $this->response_data['payer_email'];
-								
+
 				return TRUE;
 			}
 			else
@@ -2457,11 +2471,11 @@ class Shop_model extends CI_Model {
 				// set order reference ID and transaction ID
 				$this->response_data['orderID'] = $this->response_data['futurePayId'];
 				$this->response_data['fullName'] = $this->response_data['name'];
-				$names = explode(' ', $this->response_data['name']); 
+				$names = explode(' ', $this->response_data['name']);
 				$this->response_data['firstName'] = @$names[0];
 				$this->response_data['lastName'] = @$names[1];
-				$this->response_data['custom'] = $this->response_data['MC_custom'];				
-								
+				$this->response_data['custom'] = $this->response_data['MC_custom'];
+
 				return TRUE;
 			}
 			else
@@ -2522,13 +2536,13 @@ class Shop_model extends CI_Model {
 		{
 			// get subscriptionID
 			$subscriptionID = substr($this->response_data['item_number'], (strpos($this->response_data['item_number'], '-')+1));
-			
+
 			$this->db->set('subscriptionID', $subscriptionID);
 			$this->db->set('referenceID', $this->response_data['subscr_id']);
 			$this->db->set('userID', $this->response_data['custom']);
 			$this->db->set('fullName', trim($this->response_data['first_name'].' '.$this->response_data['last_name']));
 			$this->db->set('email', $this->response_data['payer_email']);
-			$this->db->set('address', 
+			$this->db->set('address',
 				$this->response_data['address1']."\n".
 				$this->response_data['address2']."\n".
 				$this->response_data['city']."\n".
@@ -2560,7 +2574,7 @@ class Shop_model extends CI_Model {
 	function update_subscriber($subscriberID = '')
 	{
 		if ($this->site->config['shopGateway'] == 'paypal')
-		{		
+		{
 			$referenceID = $this->response_data['subscr_id'];
 			$amount = $this->response_data['mc_gross'];
 		}
@@ -2569,13 +2583,13 @@ class Shop_model extends CI_Model {
 			$referenceID = $this->response_data['futurePayId'];
 			$amount = $this->response_data['amount'];
 		}
-		
+
 		// update subscriber
 		$this->db->where('siteID', $this->siteID);
 		$this->db->where('referenceID', $referenceID);
 		$this->db->set('lastPayment', date("Y-m-d H:i:s"));
 		$this->db->update('subscribers');
-		
+
 		// add subscriber payment
 		$this->db->set('dateCreated', date("Y-m-d H:i:s"));
 		$this->db->set('siteID', $this->siteID);
@@ -2590,36 +2604,36 @@ class Shop_model extends CI_Model {
 	function cancel_subscriber()
 	{
 		if ($this->site->config['shopGateway'] == 'paypal')
-		{		
+		{
 			$referenceID = $this->response_data['subscr_id'];
 		}
 		elseif ($this->site->config['shopGateway'] == 'rbsworldpay')
 		{
 			$referenceID = $this->response_data['futurePayId'];
 		}
-		
+
 		// cancel subscriber
 		$query = $this->db->get_where('subscribers', array('referenceID' => $referenceID));
 		$row = $query->row_array();
-		
+
 		$this->db->where('siteID', $this->siteID);
 		$this->db->where('referenceID', $referenceID);
 
 		$this->db->set('active', 0);
 
 		$this->db->update('subscribers');
-		
+
 		$this->downgrade_user($row['userID']);
 
 		return TRUE;
 	}
 
-	function log_response_results($success) 
+	function log_response_results($success)
 	{
 		if (!$this->response_log) return;  // is logging turned off?
 
 		// Timestamp
-		$text = '['.date('m/d/Y g:i A').'] - '; 
+		$text = '['.date('m/d/Y g:i A').'] - ';
 
 		// Success or failure being logged?
 		if ($success) $text .= "SUCCESS!\n";
@@ -2635,11 +2649,11 @@ class Shop_model extends CI_Model {
 
 		// Write to log
 		$fp=fopen($this->response_log_file,'a');
-		fwrite($fp, $text . "\n\n"); 
+		fwrite($fp, $text . "\n\n");
 
 		fclose($fp);  // close file
 	}
-	
+
 	function set_reset_key($userID = '', $key = '')
 	{
 		if ($key && $userID)
@@ -2697,15 +2711,15 @@ class Shop_model extends CI_Model {
 		// set subscribed status
 		$this->db->set('subscribed', 1);
 		$this->db->set('plan', $plan);
-		
+
 		$this->db->where('siteID', $this->siteID);
 		$this->db->where('userID', $userID);
 
 		$this->db->update('users');
 
-		return TRUE;		
+		return TRUE;
 	}
-	
+
 	function downgrade_user($userID)
 	{
 		// update users based on subscriber action
@@ -2720,24 +2734,24 @@ class Shop_model extends CI_Model {
 
 		// set subscribed status
 		$this->db->set('subscribed', 0);
-		
+
 		$this->db->where('siteID', $this->siteID);
 		$this->db->where('userID', $userID);
 
 		$this->db->update('users');
 
-		return TRUE;		
+		return TRUE;
 	}
 
 	function approve_review($reviewID)
 	{
 		$this->db->set('active', 1);
-		$this->db->where('siteID', $this->siteID);		
+		$this->db->where('siteID', $this->siteID);
 		$this->db->where('reviewID', $reviewID);
 
 		$this->db->update('shop_reviews');
 
-		return TRUE;	
+		return TRUE;
 	}
 
 	function renew_downloads($transactionID)
@@ -2773,7 +2787,7 @@ class Shop_model extends CI_Model {
 	}
 
 	function export_orders()
-	{	
+	{
 		// default where
 		$this->db->where('shop_transactions.siteID', $this->siteID);
 		$this->db->where('paid', 1);
@@ -2782,7 +2796,7 @@ class Shop_model extends CI_Model {
 		$this->db->select('shop_transactions.dateCreated as Date, transactionCode as OrderID, amount, postage, discounts as Discounts, donation as Donation, tax as Tax, firstName as FirstName, lastName as LastName, address1 as Address1, address2 as Address, address3 as Address3, city as City, state as State, postcode as Postcode, country as Country, email as Email, notes as Notes');
 
 		// join
-		$this->db->join('users', 'users.userID = shop_transactions.userID');	
+		$this->db->join('users', 'users.userID = shop_transactions.userID');
 
 		// order
 		$this->db->order_by('shop_transactions.dateCreated', 'asc');
