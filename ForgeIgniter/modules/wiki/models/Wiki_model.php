@@ -17,20 +17,20 @@
 // ------------------------------------------------------------------------
 
 class Wiki_model extends CI_Model {
-	
+
 	function __construct()
 	{
 		parent::__construct();
-		
+
 		$this->table = 'wiki';
-		
+
 		// get siteID, if available
 		if (defined('SITEID'))
 		{
 			$this->siteID = SITEID;
 		}
 	}
-	
+
 	function get_page($pageID = '', $uri = FALSE)
 	{
 		// check stuff
@@ -41,18 +41,21 @@ class Wiki_model extends CI_Model {
 		elseif ($uri !== FALSE)
 		{
 			$this->db->where('uri', $uri);
-		}	
+		}
 		else
 		{
 			return FALSE;
-		}	
+		}
 
 		// select
 		$this->db->select('t1.*, t2.body, t2.dateCreated, t2.userID');
 
+		$this->db->from('wiki t1');
+    $this->db->limit(1);
+
 		// join versions
-		$this->db->join('wiki_versions t2', 't2.versionID = t1 . versionID', 'left');
-		
+		$this->db->join('wiki_versions t2', 't2.versionID = t1.versionID', 'left');
+
 		$this->db->where('t1.siteID', $this->siteID, FALSE);
 		$this->db->where('active', 1);
 		$this->db->where('deleted', 0);
@@ -62,7 +65,7 @@ class Wiki_model extends CI_Model {
 		$this->db->order_by('t2.dateCreated', 'desc');
 
 		// get wiki page
-		$query = $this->db->get('wiki t1', 1);
+		$query = $this->db->get();
 
 		if ($query->num_rows() == 1)
 		{
@@ -89,19 +92,19 @@ class Wiki_model extends CI_Model {
 
 		// set paging
 		$this->core->set_paging($totalRows, $this->site->config['paging']);
-				
+
 		// wheres
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0));
 		$this->db->where('active', 1);
 		if ($catID)	$this->db->where('catID', $catID);
-		if ($catID === FALSE) $this->db->where('catID', 0);		
+		if ($catID === FALSE) $this->db->where('catID', 0);
 		if ($searchIDs !== FALSE) $this->db->where_in('pageID', $searchIDs);
 
 		// order
 		$this->db->order_by('pageName', 'asc');
-		
+
 		$query = $this->db->get('wiki');
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -109,7 +112,7 @@ class Wiki_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_versions($pageID)
@@ -117,9 +120,9 @@ class Wiki_model extends CI_Model {
 		$this->db->where('pageID', $pageID);
 
 		$this->db->order_by('dateCreated', 'desc');
-		
+
 		$query = $this->db->get('wiki_versions', 30);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -140,9 +143,9 @@ class Wiki_model extends CI_Model {
 		$this->db->join('wiki t2', 't2.pageID = t1 . pageID');
 
 		$this->db->order_by('dateCreated', 'desc');
-		
+
 		$query = $this->db->get('wiki_versions t1', 50);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -157,18 +160,18 @@ class Wiki_model extends CI_Model {
 	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0));
-		
+
 		// get based on category ID
 		if ($catID)
 		{
 			// select
 			$this->db->select('wiki_cats.*, parentID as tempParentID, (SELECT catName from '.$this->db->dbprefix.'wiki_cats where '.$this->db->dbprefix.'wiki_cats.catID = tempParentID) AS parentName', FALSE);
-			
+
 			// wheres
 			$this->db->where('catID', $catID);
 
 			$this->db->order_by('catOrder');
-					
+
 			$query = $this->db->get('wiki_cats', 1);
 
 			if ($query->num_rows())
@@ -178,15 +181,15 @@ class Wiki_model extends CI_Model {
 			else
 			{
 				return FALSE;
-			}	
+			}
 		}
 		// or just get all of em
 		else
 		{
 			$this->db->select('wiki_cats.*, if(parentID>0, parentID+1, catID) as parentOrder', FALSE);
 			$this->db->order_by('parentOrder');
-			$this->db->order_by('catOrder');			
-			
+			$this->db->order_by('catOrder');
+
 			// template type
 			$query = $this->db->get('wiki_cats');
 
@@ -208,9 +211,9 @@ class Wiki_model extends CI_Model {
 
 		// get category by ID
 		$this->db->where('catID', $catID);
-		
+
 		$query = $this->db->get('wiki_cats', 1);
-		
+
 		if ($query->num_rows())
 		{
 			return $query->row_array();
@@ -218,7 +221,7 @@ class Wiki_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_category_parents()
@@ -227,12 +230,12 @@ class Wiki_model extends CI_Model {
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0));
 
 		// where parent is set
-		$this->db->where('parentID', 0); 
-		
+		$this->db->where('parentID', 0);
+
 		$this->db->order_by('catOrder', 'asc');
-		
+
 		$query = $this->db->get('wiki_cats');
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -240,7 +243,7 @@ class Wiki_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function get_category_children($catID = '')
@@ -250,11 +253,11 @@ class Wiki_model extends CI_Model {
 
 		// get category by ID
 		$this->db->where('parentID', $catID);
-		
+
 		$this->db->order_by('catOrder', 'asc');
-		
+
 		$query = $this->db->get('wiki_cats');
-		
+
 		if ($query->num_rows())
 		{
 			return $query->result_array();
@@ -262,46 +265,46 @@ class Wiki_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function search_wiki($query)
 	{
 		// make sure query is greater than 2 (otherwise load will be too high)
 		if (strlen($query) > 2)
-		{		
+		{
 			// default wheres
 			$where = array(
 				'wiki.deleted' => 0,
 				'wiki.siteID' => $this->siteID,
 			);
-	
+
 			// grab total
 			$this->db->where($where);
-	
+
 			// search
 			$this->db->like('wiki.pageName', $query);
-			$this->db->or_like('wiki_versions.body', $query);	
+			$this->db->or_like('wiki_versions.body', $query);
 
 			// join topics
 			$this->db->join('wiki_versions', 'wiki.pageID = wiki_versions.pageID');
-		
+
 			// stuff
 			$this->db->order_by('wiki.dateCreated', 'desc');
 			$this->db->group_by('wiki.pageID');
-			
+
 			// grab
 			$query = $this->db->get('wiki');
-	
+
 			if ($query->num_rows())
 			{
 				$result = $query->result_array();
-	
+
 				foreach($result as $row)
 				{
 					$pageIDs[] = $row['pageID'];
 				}
-				
+
 				return $pageIDs;
 			}
 			else
@@ -326,7 +329,7 @@ class Wiki_model extends CI_Model {
 		if ($query->num_rows())
 		{
 			$row = $query->row_array();
-			
+
 			if ($display !== FALSE)
 			{
 				return ($row['displayName']) ? $row['displayName'] : $row['firstName'].' '.$row['lastName'];
@@ -339,7 +342,7 @@ class Wiki_model extends CI_Model {
 		else
 		{
 			return FALSE;
-		}		
+		}
 	}
 
 	function update_page($uri = '')
@@ -368,7 +371,7 @@ class Wiki_model extends CI_Model {
 		{
 			// add the page
 			$this->db->set('pageName', $this->input->post('pageName'));
-			$this->db->set('catID', $this->input->post('catID'));						
+			$this->db->set('catID', $this->input->post('catID'));
 			$this->db->set('dateCreated', date("Y-m-d H:i:s"));
 			$this->db->set('userID', $this->session->userdata('userID'));
 			$this->db->set('uri', $uri);
@@ -387,7 +390,7 @@ class Wiki_model extends CI_Model {
 				$this->db->update('wiki');
 			}
 
-			return TRUE;			
+			return TRUE;
 		}
 		else
 		{
@@ -414,7 +417,7 @@ class Wiki_model extends CI_Model {
 		{
 			return FALSE;
 		}
-		
+
 		// add version
 		$this->db->set('pageID', $pageID);
 		$this->db->set('dateCreated', date("Y-m-d H:i:s"));
@@ -422,12 +425,12 @@ class Wiki_model extends CI_Model {
 		$this->db->set('body', $this->input->post('body'));
 		$this->db->set('notes', $this->input->post('notes'));
 		$this->db->set('siteID', $this->siteID);
-		
+
 		$this->db->insert('wiki_versions');
 
 		// get version ID
 		$versionID = $this->db->insert_id();
-		
+
 		return $versionID;
 	}
 
