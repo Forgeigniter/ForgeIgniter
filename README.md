@@ -1,9 +1,6 @@
 # ForgeIgniter | CI-3.x
 ForgeIgniter CMS built on CodeIgniter 3.x
 
-if you'd like to download the CI2 version
-https://github.com/Forgeigniter/ForgeIgniter-CI-2.x
-
 # Development 
 Be sure to check out the development branch to see whats new and help forge the CMS
 
@@ -11,4 +8,7 @@ Be sure to check out the development branch to see whats new and help forge the 
 if you'd like to download the CI2 version https://github.com/Forgeigniter/ForgeIgniter-CI-2.x
 
 # LINKS
-http://www.forgeigniter.com
+http://www.forgeigniter.com  
+
+# Contributors 
+Stu Green, Jesse Orndorff, Reconix, Roompam Poddar
