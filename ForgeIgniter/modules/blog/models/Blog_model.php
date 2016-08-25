@@ -556,15 +556,17 @@ class Blog_Model extends CI_Model {
 		}
 
 		$this->db->select('t1.*, t2.postTitle, t2.dateCreated as uriDate, t2.uri');
+		$this->db->from('blog_comments t1');
+		$this->db->limit(30);
 		
 		$this->db->where('t1.deleted', 0, FALSE);
 		$this->db->where('t1.siteID', $this->siteID, FALSE);
 
-		$this->db->join('blog_posts t2', 't2.postID = t1 . postID');
+		$this->db->join('blog_posts t2', 't2.postID = t1.postID');
 		
-		$this->db->order_by('t1 . dateCreated', 'desc');
+		$this->db->order_by('t1.dateCreated', 'desc');
 		
-		$query = $this->db->get('blog_comments t1', 30);
+		$query = $this->db->get();
 		
 		$comments = array();
 		
@@ -585,16 +587,20 @@ class Blog_Model extends CI_Model {
 			$this->db->where('t1.active', 1, FALSE);
 		}
 
+		// select
 		$this->db->select('t1.*, t2.postTitle, t2.dateCreated as uriDate, t2.uri');
+		$this->db->from('blog_comments t1');
 		
 		$this->db->where('t1.deleted', 0, FALSE);
 		$this->db->where('t1.siteID', $this->siteID, FALSE);
+		
+		// join revisions
+		$this->db->join('blog_posts t2', 't2.postID = t1.postID');
+		
+		$this->db->order_by('t1.dateCreated', 'asc');
+		
 
-		$this->db->join('blog_posts t2', 't2.postID = t1 . postID');
-		
-		$this->db->order_by('t1 . dateCreated', 'asc');
-		
-		$query = $this->db->get('blog_comments t1');
+		$query = $this->db->get();
 		
 		$comments = array();
 		

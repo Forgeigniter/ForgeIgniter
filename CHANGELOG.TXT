@@ -6,9 +6,13 @@
 
 - ForgeIgniter
 	¬ Updated: Modular Extensions - HMVC
+	¬ Fixed: Unknown column 'FI_t1 .postID' in 'on clause'
+	¬ Fixed: errors on mysql join alias interpretation comments
 
 - CodeIgniter
 	¬ Updated to v3.1.0 http://www.codeigniter.com/user_guide/changelog.html
+	
+--------------------
 
 ## Version v1.0
 
