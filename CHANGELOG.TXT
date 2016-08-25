@@ -2,7 +2,15 @@
 # CodeIgniter 3.x Branch
 --------------------------
 
-## Version v2.0
+## Version v1.1
+
+- ForgeIgniter
+	¬ Updated: Modular Extensions - HMVC
+
+- CodeIgniter
+	¬ Updated to v3.1.0 http://www.codeigniter.com/user_guide/changelog.html
+
+## Version v1.0
 
 - ForgeIgniter
 	¬ Fixed: undefined model error and preg_match_all() issues
@@ -13,11 +21,20 @@
 
 - CodeIgniter
 	¬ Updated to v3.0.3 http://www.codeigniter.com/user_guide/changelog.html
+	
+- Markdown ITF Lib
+	¬ Updated: to support 1.5.1
 
 --------------------
 
 ## Previous Versions
 
 Please check the documentation changelog for a full list.
+
+## Basic Version Key
+
+1.x.x = Major Core Updates or huge overhalls.
+x.1.x = Improvments or additions to features like libaries etc...
+x.x.1 = Minor fixes
 
 
