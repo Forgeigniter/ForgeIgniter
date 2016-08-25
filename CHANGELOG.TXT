@@ -2,12 +2,19 @@
 # CodeIgniter 3.x Branch
 --------------------------
 
+## Notes:
+	Once the dev branch is stable and a new auth is integrated we should be finally
+	ready to push to master.
+	
+--------------------
+
 ## Version v1.1
 
 - ForgeIgniter
 	¬ Updated: Modular Extensions - HMVC
 	¬ Fixed: Unknown column 'FI_t1 .postID' in 'on clause'
 	¬ Fixed: errors on mysql join alias interpretation comments
+	¬ Fixed: Fixed: wrong select query
 
 - CodeIgniter
 	¬ Updated to v3.1.0 http://www.codeigniter.com/user_guide/changelog.html
