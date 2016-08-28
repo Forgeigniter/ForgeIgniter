@@ -2039,8 +2039,9 @@ class Shop_model extends CI_Model {
 
 			fclose($fp); // close connection
 		}
-
-		if (eregi("VERIFIED",$this->response))
+		
+		// stristr replaced eregi v1.1, would probably be better to use preg_match()
+		if (stristr("VERIFIED",$this->response))
 		{
 			// check for cancellation
 			if ($this->response_date['txn_type'] == 'subscr_eot')
