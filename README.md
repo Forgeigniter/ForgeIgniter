@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/Forgeigniter/ForgeIgniter.png?label=ready&title=Ready)](https://waffle.io/Forgeigniter/ForgeIgniter)
 # ForgeIgniter
 A friendly and easy to use CMS build on Codeigniter
 
