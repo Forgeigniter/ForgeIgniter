@@ -7,18 +7,18 @@
  *
  * @package		ForgeIgniter
  * @author		ForgeIgniter Team
- * @copyright	Copyright (c) 2015, ForgeIgniter
+ * @copyright	Copyright (c) 2010 - 2016, ForgeIgniter
  * @license		http://forgeigniter.com/license
- * @link		http://forgeigniter.com/
- * @since		Hal Version 1.0
- * @filesource
+ * @link			http://forgeigniter.com/
+ * @since			Hal Version 1.0
+ * @version		1.1
  */
 
 // ------------------------------------------------------------------------
 
 class Wiki_model extends CI_Model {
 
-	function __construct()
+	public function __construct()
 	{
 		parent::__construct();
 
@@ -31,7 +31,7 @@ class Wiki_model extends CI_Model {
 		}
 	}
 
-	function get_page($pageID = '', $uri = FALSE)
+	public function get_page($pageID = '', $uri = FALSE)
 	{
 		// check stuff
 		if (intval($pageID))
@@ -51,11 +51,12 @@ class Wiki_model extends CI_Model {
 		$this->db->select('t1.*, t2.body, t2.dateCreated, t2.userID');
 
 		$this->db->from('wiki t1');
-    $this->db->limit(1);
+		$this->db->limit(1);
 
-		// join versions
+		// Join versions
 		$this->db->join('wiki_versions t2', 't2.versionID = t1.versionID', 'left');
 
+		//	Where
 		$this->db->where('t1.siteID', $this->siteID, FALSE);
 		$this->db->where('active', 1);
 		$this->db->where('deleted', 0);
@@ -77,7 +78,7 @@ class Wiki_model extends CI_Model {
 		}
 	}
 
-	function get_pages($catID = '', $searchIDs = FALSE)
+	public function get_pages($catID = '', $searchIDs = FALSE)
 	{
 		// wheres
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0));
@@ -115,7 +116,7 @@ class Wiki_model extends CI_Model {
 		}
 	}
 
-	function get_versions($pageID)
+	public function get_versions($pageID)
 	{
 		$this->db->where('pageID', $pageID);
 
@@ -133,18 +134,23 @@ class Wiki_model extends CI_Model {
 		}
 	}
 
-	function get_recent_changes()
+	public function get_recent_changes()
 	{
 		$this->db->where('deleted', 0);
 		$this->db->where('t1.siteID', $this->siteID, FALSE);
 
+		// where
 		$this->db->select('t1.*, t2.pageName, t2.pageID, t2.uri');
+		$this->db->from('wiki_versions t1');
+		$this->db->limit(50);
 
-		$this->db->join('wiki t2', 't2.pageID = t1 . pageID');
+		// Join
+		$this->db->join('wiki t2', 't2.pageID = t1.pageID');
 
 		$this->db->order_by('dateCreated', 'desc');
 
-		$query = $this->db->get('wiki_versions t1', 50);
+		// Get
+		$query = $this->db->get();
 
 		if ($query->num_rows())
 		{
@@ -156,7 +162,7 @@ class Wiki_model extends CI_Model {
 		}
 	}
 
-	function get_categories($catID = '')
+	public function get_categories($catID = '')
 	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0));
@@ -204,7 +210,7 @@ class Wiki_model extends CI_Model {
 		}
 	}
 
-	function get_category($catID = '')
+	public function get_category($catID = '')
 	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0));
@@ -224,7 +230,7 @@ class Wiki_model extends CI_Model {
 		}
 	}
 
-	function get_category_parents()
+	public function get_category_parents()
 	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0));
@@ -246,7 +252,7 @@ class Wiki_model extends CI_Model {
 		}
 	}
 
-	function get_category_children($catID = '')
+	public function get_category_children($catID = '')
 	{
 		// default where
 		$this->db->where(array('siteID' => $this->siteID, 'deleted' => 0));
@@ -268,7 +274,7 @@ class Wiki_model extends CI_Model {
 		}
 	}
 
-	function search_wiki($query)
+	public function search_wiki($query)
 	{
 		// make sure query is greater than 2 (otherwise load will be too high)
 		if (strlen($query) > 2)
@@ -318,7 +324,7 @@ class Wiki_model extends CI_Model {
 		}
 	}
 
-	function lookup_user($userID, $display = FALSE)
+	public function lookup_user($userID, $display = FALSE)
 	{
 		// default wheres
 		$this->db->where('userID', $userID);
@@ -345,7 +351,7 @@ class Wiki_model extends CI_Model {
 		}
 	}
 
-	function update_page($uri = '')
+	public function update_page($uri = '')
 	{
 		// find out if it already exists
 		if ($pagedata = $this->get_page(FALSE, $uri))
@@ -398,7 +404,7 @@ class Wiki_model extends CI_Model {
 		}
 	}
 
-	function add_version($pageID)
+	public function add_version($pageID)
 	{
 		// check page
 		if (!$pagedata = $this->get_page($pageID))
@@ -434,7 +440,7 @@ class Wiki_model extends CI_Model {
 		return $versionID;
 	}
 
-	function revert_page($pageID, $versionID)
+	public function revert_page($pageID, $versionID)
 	{
 		// update the page with version
 		$this->db->set('versionID', $versionID);
