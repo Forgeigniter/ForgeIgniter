@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 /*
 | -------------------------------------------------------------------
 | Foreign Characters
@@ -99,6 +99,3 @@ $foreign_characters = array(
 	'/Я/' => 'Ya',
 	'/я/' => 'ya'
 );
-
-/* End of file foreign_chars.php */
-/* Location: ./ForgeIgniter/config/foreign_chars.php */
