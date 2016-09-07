@@ -1,4 +1,4 @@
-<?php
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * ForgeIgniter
  *
@@ -7,11 +7,11 @@
  *
  * @package		ForgeIgniter
  * @author		ForgeIgniter Team
- * @copyright	Copyright (c) 2015, ForgeIgniter
+ * @copyright	Copyright (c) 2015-2016, ForgeIgniter
  * @license		http://forgeigniter.com/license
  * @link		http://forgeigniter.com/
  * @since		Hal Version 1.0
- * @filesource
+ * @version		0.2
  */
 
 // ------------------------------------------------------------------------
@@ -23,26 +23,31 @@ class Admin extends MX_Controller {
 	var $includes_path = '/includes/admin';				// path to includes for header and footer
 	var $redirect = '/admin/pages/viewall';				// default redirect
 	var $objectID = 'pageID';							// default unique ID									
-	var $permissions = array();
+	var $permissions = array();							// Deprecated 
 	
-	function __construct()
+	public function __construct()
 	{
 		parent::__construct();
+		
+		//Load Auth
+		$this->load->library('flexi_auth');
 
 		// check user is logged in, if not send them away from this controller
-		if (!$this->session->userdata('session_admin'))
+		if (!$this->flexi_auth->is_logged_in())
 		{
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need to login to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
 			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 		
-		// get permissions and redirect if they don't have access to this module
-		if (!$this->permission->permissions)
+		// check user is logged in & has privileges, if not send them away from this controller
+		if (!$this->flexi_auth->is_logged_in_via_password() || !$this->flexi_auth->is_privileged('Allow Pages'))
 		{
-			redirect('/admin/dashboard/permissions');
-		}
-		if (!in_array($this->uri->segment(2), $this->permission->permissions))
-		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 
 		// get siteID, if available
@@ -56,12 +61,12 @@ class Admin extends MX_Controller {
 		$this->load->model('pages_model', 'pages');
 	}
 	
-	function index()
+	public function index()
 	{
 		redirect($this->redirect);
 	}
 	
-	function viewall()
+	public function viewall()
 	{
 		// set defaults
 		$output['parents'] = array();
@@ -90,13 +95,13 @@ class Admin extends MX_Controller {
 		$this->load->view($this->includes_path.'/footer');
 	}
 
-	function add()
+	public function add()
 	{
 		$pageID = $this->pages->add_temp_page();
 		redirect('/admin/pages/edit/'.$pageID);
 	}
 
-	function edit($pageID)
+	public function edit($pageID)
 	{
 		if (!$pagedata = $this->core->get_page($pageID))
 		{
@@ -104,9 +109,12 @@ class Admin extends MX_Controller {
 		}
 				
 		// check permissions for this page
-		if (!in_array('pages_edit', $this->permission->permissions))
+		if (!$this->flexi_auth->is_privileged('Add / edit pages'))
 		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages Edit privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 
 		// required
@@ -249,7 +257,7 @@ class Admin extends MX_Controller {
 		$this->load->view($this->includes_path.'/footer');
 	}
 	
-	function publish($pageID)
+	public function publish($pageID)
 	{
 		if (!$pagedata = $this->core->get_page($pageID))
 		{
@@ -257,9 +265,12 @@ class Admin extends MX_Controller {
 		}
 		
 		// check permissions for this page
-		if (!in_array('pages_edit', $this->permission->permissions))
+		if (!$this->flexi_auth->is_privileged('Add / edit pages'))
 		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages Edit privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 		
 		// publish draft
@@ -274,7 +285,7 @@ class Admin extends MX_Controller {
 		redirect('/admin/pages/edit/'.$pageID);
 	}
 
-	function generate_uri()
+	public function generate_uri()
 	{
 		$output = '';
 		
@@ -289,12 +300,15 @@ class Admin extends MX_Controller {
 		$this->output->set_output($output);
 	}
 
-	function delete($objectID)
+	public function delete($objectID)
 	{
 		// check permissions for this page
-		if (!in_array('pages_delete', $this->permission->permissions))
+		if (!$this->flexi_auth->is_privileged('Delete pages'))
 		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages Delete privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 				
 		if ($this->core->soft_delete($this->table, array($this->objectID => $objectID)));
@@ -309,12 +323,15 @@ class Admin extends MX_Controller {
 		}
 	}
 
-	function revert_version($pageID = '', $versionID = '')
+	public function revert_version($pageID = '', $versionID = '')
 	{
 		// check permissions for this page
-		if (!in_array('pages_edit', $this->permission->permissions))
+		if (!$this->flexi_auth->is_privileged('Add / edit pages'))
 		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages Edit privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 		
 		// check stuff
@@ -341,12 +358,15 @@ class Admin extends MX_Controller {
 		}
 	}
 
-	function revert_draft($pageID = '', $draftID = '')
+	public function revert_draft($pageID = '', $draftID = '')
 	{
 		// check permissions for this page
-		if (!in_array('pages_edit', $this->permission->permissions))
+		if (!$this->flexi_auth->is_privileged('Add / edit pages'))
 		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages Edit privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 		
 		// check stuff
@@ -373,12 +393,15 @@ class Admin extends MX_Controller {
 		}
 	}
 
-	function templates($type = '')
+	public function templates($type = '')
 	{
 		// check permissions for this page
-		if (!in_array('pages_templates', $this->permission->permissions))
+		if (!$this->flexi_auth->is_privileged('Allow Templates'))
 		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages Template privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 
 		// deal with post
@@ -501,12 +524,15 @@ class Admin extends MX_Controller {
 		$this->load->view($this->includes_path.'/footer');
 	}
 
-	function add_template()
+	public function add_template()
 	{
 		// check permissions for this page
-		if (!in_array('pages_templates', $this->permission->permissions))
+		if (!$this->flexi_auth->is_privileged('Allow Templates'))
 		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages Template privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 				
 		// required fields
@@ -549,12 +575,15 @@ class Admin extends MX_Controller {
 		$this->load->view($this->includes_path.'/footer');
 	}
 
-	function edit_template($templateID)
+	public function edit_template($templateID)
 	{
 		// check permissions for this page
-		if (!in_array('pages_templates', $this->permission->permissions))
+		if (!$this->flexi_auth->is_privileged('Allow Templates'))
 		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages Template privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 
 		// required fields
@@ -630,12 +659,15 @@ class Admin extends MX_Controller {
 		}
 	}
 
-	function delete_template($templateID)
+	public function delete_template($templateID)
 	{
 		// check permissions for this page
-		if (!in_array('pages_templates', $this->permission->permissions))
+		if (!$this->flexi_auth->is_privileged('Allow Templates'))
 		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages Template privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 				
 		// where
@@ -648,12 +680,15 @@ class Admin extends MX_Controller {
 		}
 	}
 
-	function revert_template($templateID = '', $revisionID = '')
+	public function revert_template($templateID = '', $revisionID = '')
 	{
 		// check permissions for this page
-		if (!in_array('pages_templates', $this->permission->permissions))
+		if (!$this->flexi_auth->is_privileged('Allow Templates'))
 		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages Template privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 		
 		// check stuff
@@ -680,12 +715,15 @@ class Admin extends MX_Controller {
 		}
 	}
 	
-	function includes($type = '')
+	public function includes($type = '')
 	{
 		// check permissions for this page
-		if (!in_array('pages_templates', $this->permission->permissions))
+		if (!$this->flexi_auth->is_privileged('Allow Templates'))
 		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages Template privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 
 		// set type
@@ -713,12 +751,15 @@ class Admin extends MX_Controller {
 		$this->load->view($this->includes_path.'/footer');
 	}	
 
-	function add_include($type = '')
+	public function add_include($type = '')
 	{
 		// check permissions for this page
-		if (!in_array('pages_templates', $this->permission->permissions))
+		if (!$this->flexi_auth->is_privileged('Allow Templates'))
 		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages Template privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 				
 		// required fields
@@ -760,12 +801,15 @@ class Admin extends MX_Controller {
 		$this->load->view($this->includes_path.'/footer');
 	}
 
-	function edit_include($includeID)
+	public function edit_include($includeID)
 	{
 		// check permissions for this page
-		if (!in_array('pages_templates', $this->permission->permissions))
+		if (!$this->flexi_auth->is_privileged('Allow Templates'))
 		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages Template privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 
 		// required fields
@@ -840,12 +884,15 @@ class Admin extends MX_Controller {
 		}
 	}
 	
-	function delete_include($includeID, $type = '')
+	public function delete_include($includeID, $type = '')
 	{
 		// check permissions for this page
-		if (!in_array('pages_templates', $this->permission->permissions))
+		if (!$this->flexi_auth->is_privileged('Allow Templates'))
 		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages Template privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 				
 		// where
@@ -858,12 +905,15 @@ class Admin extends MX_Controller {
 		}
 	}
 
-	function revert_include($includeID = '', $revisionID = '')
+	public function revert_include($includeID = '', $revisionID = '')
 	{
 		// check permissions for this page
-		if (!in_array('pages_templates', $this->permission->permissions))
+		if (!$this->flexi_auth->is_privileged('Allow Templates'))
 		{
-			redirect('/admin/dashboard/permissions');
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You need the Pages Template privilege to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
 		}
 		
 		// check stuff
@@ -890,13 +940,15 @@ class Admin extends MX_Controller {
 		}
 	}
 
-	function navigation()
+	public function navigation()
 	{
 		// check permissions for this page
+		/*
 		if (!in_array('pages_navigation', $this->permission->permissions))
 		{
 			redirect('/admin/dashboard/permissions');
 		}
+		*/
 			
 		// get parents
 		if ($parents = $this->template->get_nav_parents('custom'))
@@ -917,13 +969,15 @@ class Admin extends MX_Controller {
 		$this->load->view($this->includes_path.'/footer');
 	}
 
-	function add_nav()
+	public function add_nav()
 	{
+		/*
 		// check permissions for this page
 		if (!in_array('pages_navigation', $this->permission->permissions))
 		{
 			redirect('/admin/dashboard/permissions');
 		}
+		*/
 
 		// required fields
 		$this->core->required = array(
@@ -965,13 +1019,15 @@ class Admin extends MX_Controller {
 		if (!$this->core->is_ajax()) $this->load->view($this->includes_path.'/footer');
 	}
 
-	function edit_nav($navID)
+	public function edit_nav($navID)
 	{
+		/*
 		// check permissions for this page
 		if (!in_array('pages_navigation', $this->permission->permissions))
 		{
 			redirect('/admin/dashboard/permissions');
 		}
+		*/
 
 		// required fields
 		$this->core->required = array(
@@ -1019,13 +1075,15 @@ class Admin extends MX_Controller {
 		if (!$this->core->is_ajax()) $this->load->view($this->includes_path.'/footer');
 	}	
 
-	function delete_nav($navID)
+	public function delete_nav($navID)
 	{
+		/*
 		// check permissions for this page
 		if (!in_array('pages_navigation', $this->permission->permissions))
 		{
 			redirect('/admin/dashboard/permissions');
 		}
+		*/
 				
 		// where
 		$objectID = array('navID' => $navID);	
@@ -1040,12 +1098,12 @@ class Admin extends MX_Controller {
 		}		
 	}
 
-	function order($field = '')
+	public function order($field = '')
 	{
 		$this->core->order(key($_POST), $field);
 	}	
 
-	function view_template($templateID, $pageID = '')
+	public function view_template($templateID, $pageID = '')
 	{	
 		// get pagedata
 		if (!$pagedata = $this->core->get_page($pageID))
@@ -1080,7 +1138,7 @@ class Admin extends MX_Controller {
 		$this->parser->parse('view_template',$output);
 	}
 
-	function add_block($versionID, $block)
+	public function add_block($versionID, $block)
 	{	
 		// check the block has content and is not null
 		if (count($_POST))
@@ -1112,7 +1170,7 @@ class Admin extends MX_Controller {
 		}
 	}
 
-	function module($modulePath = '')
+	public function module($modulePath = '')
 	{
 		if ($modulePath)
 		{
