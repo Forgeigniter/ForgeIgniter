@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 /*
 | -------------------------------------------------------------------
 | SMILEYS
@@ -60,7 +60,4 @@ $smileys = array(
 	':exclaim:'		=>	array('exclaim.gif',		'19',	'19',	'excaim'),
 	':question:'	=>	array('question.gif',		'19',	'19',	'question') // no comma after last item
 
-		);
-
-/* End of file smileys.php */
-/* Location: ./ForgeIgniter/config/smileys.php */
+);
