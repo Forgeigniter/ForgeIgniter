@@ -1,4 +1,5 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
+
 /*
 | -------------------------------------------------------------------
 | USER AGENT TYPES
@@ -27,7 +28,7 @@ $platforms = array(
 	'win98'				=> 'Windows 98',
 	'windows 95'		=> 'Windows 95',
 	'win95'				=> 'Windows 95',
-	'windows phone'			=> 'Windows Phone',
+	'windows phone'		=> 'Windows Phone',
 	'windows'			=> 'Unknown Windows OS',
 	'android'			=> 'Android',
 	'blackberry'		=> 'BlackBerry',
@@ -54,6 +55,7 @@ $platforms = array(
 	'unix'				=> 'Unknown Unix OS',
 	'symbian' 			=> 'Symbian OS'
 );
+
 // The order of this array should NOT be changed. Many browsers return
 // multiple browser types so we want to identify the sub-type first.
 $browsers = array(
@@ -87,6 +89,7 @@ $browsers = array(
 	'Maxthon'		=> 'Maxthon',
 	'Ubuntu'		=> 'Ubuntu Web Browser'
 );
+
 $mobiles = array(
 	// legacy array, old values commented out
 	'mobileexplorer'	=> 'Mobile Explorer',
@@ -103,6 +106,7 @@ $mobiles = array(
 //	'ericsson'			=> 'Ericsson',
 //	'blackberry'		=> 'BlackBerry',
 //	'motorola'			=> 'Motorola'
+
 	// Phones and Manufacturers
 	'motorola'		=> 'Motorola',
 	'nokia'			=> 'Nokia',
@@ -146,6 +150,7 @@ $mobiles = array(
 	'wii'			=> 'Nintendo Wii',
 	'open web'		=> 'Open Web',
 	'openweb'		=> 'OpenWeb',
+
 	// Operating Systems
 	'android'		=> 'Android',
 	'symbian'		=> 'Symbian',
@@ -153,6 +158,7 @@ $mobiles = array(
 	'elaine'		=> 'Palm',
 	'series60'		=> 'Symbian S60',
 	'windows ce'	=> 'Windows CE',
+
 	// Browsers
 	'obigo'			=> 'Obigo',
 	'netfront'		=> 'Netfront Browser',
@@ -162,6 +168,7 @@ $mobiles = array(
 	'opera mini'	=> 'Opera Mini',
 	'opera mobi'	=> 'Opera Mobile',
 	'fennec'		=> 'Firefox Mobile',
+
 	// Other
 	'digital paths'	=> 'Digital Paths',
 	'avantgo'		=> 'AvantGo',
@@ -170,6 +177,7 @@ $mobiles = array(
 	'vodafone'		=> 'Vodafone',
 	'docomo'		=> 'NTT DoCoMo',
 	'o2'			=> 'O2',
+
 	// Fallback
 	'mobile'		=> 'Generic Mobile',
 	'wireless'		=> 'Generic Mobile',
@@ -181,16 +189,17 @@ $mobiles = array(
 	'smartphone'	=> 'Generic Mobile',
 	'cellphone'		=> 'Generic Mobile'
 );
+
 // There are hundreds of bots but these are the most common.
 $robots = array(
 	'googlebot'		=> 'Googlebot',
 	'msnbot'		=> 'MSNBot',
-	'baiduspider'		=> 'Baiduspider',
+	'baiduspider'	=> 'Baiduspider',
 	'bingbot'		=> 'Bing',
 	'slurp'			=> 'Inktomi Slurp',
 	'yahoo'			=> 'Yahoo',
-	'askjeeves'		=> 'AskJeeves',
-	'fastcrawler'		=> 'FastCrawler',
+	'ask jeeves'	=> 'Ask Jeeves',
+	'fastcrawler'	=> 'FastCrawler',
 	'infoseek'		=> 'InfoSeek Robot 1.0',
 	'lycos'			=> 'Lycos',
 	'yandex'		=> 'YandexBot',
@@ -198,8 +207,8 @@ $robots = array(
 	'CRAZYWEBCRAWLER'	=> 'Crazy Webcrawler',
 	'adsbot-google'		=> 'AdsBot Google',
 	'feedfetcher-google'	=> 'Feedfetcher Google',
-	'curious george'	=> 'Curious George'
+	'curious george'	=> 'Curious George',
+	'ia_archiver'	=> 'Alexa Crawler',
+	'MJ12bot'		=> 'Majestic-12',
+	'Uptimebot'		=> 'Uptimebot'
 );
-
-/* End of file user_agents.php */
-/* Location: ./ForgeIgniter/config/user_agents.php */
