@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
 /*
 | -------------------------------------------------------------------------
 | URI ROUTING
@@ -101,6 +102,3 @@ $route['404_override'] = '';
 
 // cms
 $route['(.*)'] = 'pages/index/$1';
-
-/* End of file routes.php */
-/* Location: ./ForgeIgniter/config/routes.php */
