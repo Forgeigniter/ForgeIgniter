@@ -13,8 +13,8 @@
  * @since		Hal Version 1.0
  * @filesource
  */
- 
-// MARKED FOR UPDATE IN FI V1.0
+
+// MARKED FOR REMOVAL IN FI V1.5
 
 // ------------------------------------------------------------------------
 
@@ -39,6 +39,7 @@ class Auth {
 		}		
 	}
 	
+	/*
 	function login($username = '', $password = '', $sessionName = '', $redirect = FALSE, $remember = FALSE)
 	{	
 		// set default session
@@ -169,5 +170,6 @@ class Auth {
 		// redirect
 		redirect($redirect);
 	}
+	*/
 
 }

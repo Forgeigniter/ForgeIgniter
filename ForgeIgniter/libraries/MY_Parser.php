@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -230,6 +230,3 @@ class MY_Parser extends CI_Parser {
 	}	
 
 }
-// END Parser Class
-
-/* End of file */

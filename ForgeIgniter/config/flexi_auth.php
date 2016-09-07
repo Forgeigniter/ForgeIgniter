@@ -8,7 +8,7 @@
  *
  * @package		ForgeIgniter
  * @author		ForgeIgniter Team
- * @copyright	Copyright (c) 2014 - 2015 ForgeIgniter
+ * @copyright	Copyright (c) 2014 - 2016 ForgeIgniter
  * @license		http://forgeigniter.com/license
  * @link		http://forgeigniter.com/
  * @since		Flexi Auth CI3 v1.0

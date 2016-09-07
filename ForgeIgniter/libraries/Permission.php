@@ -12,6 +12,8 @@
  * @link		http://forgeigniter.com/
  * @since		Hal Version 1.0
  * @filesource
+ *
+ * CMS NOTE: Marked For Removal !
  */
 
 // ------------------------------------------------------------------------

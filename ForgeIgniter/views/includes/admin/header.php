@@ -76,12 +76,12 @@
 		
 		<div id="navigation">
 			<ul id="menubar">
-			<?php if($this->session->userdata('session_admin')): ?>
-				<?php if (in_array('pages', $this->permission->permissions)): ?>
+			<?php if ($this->flexi_auth->is_logged_in_via_password() || $this->flexi_auth->is_admin()): ?>
+				<?php if ($this->flexi_auth->is_privileged('Allow Pages')): ?>
 					<li><a href="<?php echo site_url('/admin/pages'); ?>">Pages</a>
 						<ul class="subnav">
 							<li><a href="<?php echo site_url('/admin/pages/viewall'); ?>">All Pages</a></li>
-							<?php if (in_array('pages_edit', $this->permission->permissions)): ?>
+							<?php if ($this->flexi_auth->is_privileged('Add / edit pages')): ?>
 								<li><a href="<?php echo site_url('/admin/pages/add'); ?>">Add Page</a></li>
 							<?php endif; ?>
 						</ul>

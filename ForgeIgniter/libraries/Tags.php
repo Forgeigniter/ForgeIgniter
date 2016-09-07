@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
@@ -16,7 +16,7 @@
 // ------------------------------------------------------------------------
 
 /**
- * CX Tags Class Modified by Haloweb
+ * CX Tags Class Modified by ForgeIgniter Team.
  *
  * @package		CXTags
  * @category	Models

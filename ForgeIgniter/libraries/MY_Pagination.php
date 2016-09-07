@@ -1,6 +1,19 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
+ * ForgeIgniter
+ *
+ * A user friendly, modular content management system.
+ * Forged on CodeIgniter - http://codeigniter.com
+ *
+ * @package		ForgeIgniter
+ * @author		ForgeIgniter Team
+ * @copyright	Copyright (c) 2014 - 2016 ForgeIgniter
+ * @license		http://forgeigniter.com/license
+ * @link		http://forgeigniter.com/
+ * @since		Hal Version 1.0
+ * @version		0.1
+ *
 * @name MY_Pagination.php
 * @version 1.0
 * @author Joost van Veen www.accentinteractive.nl
@@ -108,4 +121,3 @@ class MY_Pagination extends CI_Pagination {
     }
 
 }
-?>

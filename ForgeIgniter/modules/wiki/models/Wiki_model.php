@@ -9,8 +9,8 @@
  * @author		ForgeIgniter Team
  * @copyright	Copyright (c) 2010 - 2016, ForgeIgniter
  * @license		http://forgeigniter.com/license
- * @link			http://forgeigniter.com/
- * @since			Hal Version 1.0
+ * @link		http://forgeigniter.com/
+ * @since		Hal Version 1.0
  * @version		1.1
  */
 

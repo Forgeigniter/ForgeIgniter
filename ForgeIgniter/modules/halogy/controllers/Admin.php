@@ -32,6 +32,16 @@ class Admin extends MX_Controller {
 		{
 			$this->siteID = SITEID;
 		}
+		
+		$this->load->library('flexi_auth');	
+
+		// Check user is logged in as an admin.
+		// For security, admin users should always sign in via Password rather than 'Remember me'.
+
+		
+		// Define a global variable to store data that is then used by the end view page.
+		$this->data = null;
+
 	}
 
 	function index()
@@ -41,6 +51,8 @@ class Admin extends MX_Controller {
 
 	function dashboard($days = '')
 	{
+		
+		/*
 		// logout if not admin
 		if ($this->session->userdata('session_user') && !$this->permission->permissions)
 		{
@@ -49,6 +61,12 @@ class Admin extends MX_Controller {
 		if (!$this->session->userdata('session_admin'))
 		{
 			redirect('/admin/login/'.$this->core->encode($this->uri->uri_string()));
+		}
+		*/
+		// logout if not admin
+		if ($this->flexi_auth->is_logged_in_via_password() || !$this->flexi_auth->is_admin()) 
+		{
+			
 		}
 
 		// load model and libs
@@ -236,7 +254,8 @@ class Admin extends MX_Controller {
 			$this->load->view('tracking_ajax', $output);
 		}
 	}
-
+	
+	/*
 	function login($redirect = '')
 	{
 		// load libs etc
@@ -294,6 +313,77 @@ class Admin extends MX_Controller {
 		$this->load->view($this->includes_path.'/footer');	
 	}
 
+
+	/**
+	 * login
+	 * Login page used by all user types to log into their account.
+	 * This demo includes 3 example accounts that can be logged into via using either their email address or username. The login details are provided within the view page.
+	 * Users without an account can register for a new account.
+	 * Note: This page is only accessible to users who are not currently logged in, else they will be redirected.
+	 */ 
+    function login()
+    {
+		if ($this->flexi_auth->is_logged_in_via_password() || $this->flexi_auth->is_admin()) 
+		{
+			// Set a custom error message.
+			$this->flexi_auth->set_error_message('You must login as an admin to access this area.', TRUE);
+			$this->session->set_flashdata('message', $this->flexi_auth->get_messages());
+			redirect('admin/dashboard');
+		}
+		
+		// If 'Login' form has been submited, attempt to log the user in.
+		if ($this->input->post('login_user'))
+		{
+			$this->load->model('auth_model');
+			$this->auth_model->login();
+		}
+			
+		// CAPTCHA Example
+		// Check whether there are any existing failed login attempts from the users ip address and whether those attempts have exceeded the defined threshold limit.
+		// If the user has exceeded the limit, generate a 'CAPTCHA' that the user must additionally complete when next attempting to login.
+		if ($this->flexi_auth->ip_login_attempts_exceeded())
+		{
+			/**
+			 * reCAPTCHA
+			 * http://www.google.com/recaptcha
+			 * To activate reCAPTCHA, ensure the 'recaptcha()' function below is uncommented and then comment out the 'math_captcha()' function further below.
+			 *
+			 * A boolean variable can be passed to 'recaptcha()' to set whether to use SSL or not.
+			 * When displaying the captcha in a view, if the reCAPTCHA theme has been set to one of the template skins (See https://developers.google.com/recaptcha/docs/customization),
+			 *  then the 'recaptcha()' function generates all the html required.
+			 * If using a 'custom' reCAPTCHA theme, then the custom html must be PREPENDED to the code returned by the 'recaptcha()' function.
+			 * Again see https://developers.google.com/recaptcha/docs/customization for a template 'custom' html theme. 
+			 * 
+			 * Note: To use this example, you will also need to enable the recaptcha examples in 'models/auth_model.php', and 'views/demo/login_view.php'.
+			*/
+			$this->data['captcha'] = $this->flexi_auth->recaptcha(FALSE);
+						
+			/**
+			 * flexi auths math CAPTCHA
+			 * Math CAPTCHA is a basic CAPTCHA style feature that asks users a basic maths based question to validate they are indeed not a bot.
+			 * For flexibility on CAPTCHA presentation, the 'math_captcha()' function only generates a string of the equation, see the example below.
+			 * 
+			 * To activate math_captcha, ensure the 'math_captcha()' function below is uncommented and then comment out the 'recaptcha()' function above.
+			 *
+			 * Note: To use this example, you will also need to enable the math_captcha examples in 'models/auth_model.php', and 'views/demo/login_view.php'.
+			*/
+			# $this->data['captcha'] = $this->flexi_auth->math_captcha(FALSE);
+		}
+				
+		// Get any status message that may have been set.
+		$this->data['message'] = (! isset($this->data['message'])) ? $this->session->flashdata('message') : $this->data['message'];	
+		
+		// view
+		$this->load->view($this->includes_path.'/header');
+		$this->load->view('login',$this->data);
+		$this->load->view($this->includes_path.'/footer');	
+		
+		
+    }
+	
+	
+	
+	/*
 	function logout($redirect = '')
 	{
 		// load libs etc
@@ -310,6 +400,41 @@ class Admin extends MX_Controller {
 		}
 		$this->auth->logout($redirect);
 	}
+	*/
+	
+	/**
+	 * logout
+	 * This example logs the user out of all sessions on all computers they may be logged into.
+	 * In this demo, this page is accessed via a link on the demo header once a user is logged in.
+	 */
+	function logout() 
+	{
+		// By setting the logout functions argument as 'TRUE', all browser sessions are logged out.
+		$this->flexi_auth->logout(TRUE);
+		
+		// Set a message to the CI flashdata so that it is available after the page redirect.
+		$this->session->set_flashdata('message', $this->flexi_auth->get_messages());		
+ 
+		redirect('auth');
+    }
+	
+	/**
+	 * logout_session
+	 * This example logs the user only out of their CURRENT browser session (e.g. Internet Cafe), but no other logged in sessions (e.g. Home and Work).
+	 * In this demo, this controller method is actually not linked to. It is included here as an example of logging a user out of only their current session.
+	 */
+	function logout_session() 
+	{
+		// By setting the logout functions argument as 'FALSE', only the current browser session is logged out.
+		$this->flexi_auth->logout(FALSE);
+
+		// Set a message to the CI flashdata so that it is available after the page redirect.
+		$this->session->set_flashdata('message', $this->flexi_auth->get_messages());		
+        
+		redirect('auth');
+    }
+
+	//
 
 	function site()
 	{
