@@ -20,7 +20,6 @@ $(function(){
 	
 	<div class="col1">
 
-		<h1><strong><?php echo ($this->session->userdata('firstName')) ? ucfirst($this->session->userdata('firstName')) : $this->session->userdata('username'); ?>'s</strong> Dashboard</h1>
 		
 		<?php if ($errors = validation_errors()): ?>
 			<div class="error">
@@ -47,7 +46,7 @@ $(function(){
 			<?php echo $activity; ?>
 		</div>
 
-		<?php if (@in_array('pages', $this->permission->permissions)): ?>
+		<?php if ($this->flexi_auth->is_privileged('Allow Pages')): ?>
 
 			<div class="module">
 			
@@ -62,7 +61,7 @@ $(function(){
 		<?php endif; ?>
 
 		
-		<?php if (@in_array('pages_templates', $this->permission->permissions)): ?>
+		<?php if ($this->flexi_auth->is_privileged('Allow Templates')): ?>
 
 			<div class="module last">
 			
@@ -76,7 +75,7 @@ $(function(){
 			
 		<?php endif; ?>
 		
-		<?php if (@in_array('images', $this->permission->permissions)): ?>
+		<?php if ($this->flexi_auth->is_privileged('Allow image uploads')): ?>
 
 			<div class="module">
 			
@@ -90,7 +89,7 @@ $(function(){
 			
 		<?php endif; ?>
 		
-		<?php if (@in_array('users', $this->permission->permissions)): ?>
+		<?php if ($this->flexi_auth->is_privileged('View Users')): ?>View Users
 		
 			<div class="module last">
 			
@@ -104,7 +103,7 @@ $(function(){
 
 		<?php endif; ?>
 
-		<?php if (@in_array('blog', $this->permission->permissions)): ?>
+		<?php if ($this->flexi_auth->is_privileged('Allow Blog')): ?>
 
 			<div class="module">
 			
@@ -118,7 +117,7 @@ $(function(){
 			
 		<?php endif; ?>
 
-		<?php if (@in_array('shop', $this->permission->permissions)): ?>
+		<?php if ($this->flexi_auth->is_privileged('Allow Shop')): ?>
 			<div class="module last">
 			
 				<h2><strong>Build Your Shop</strong></h2>
@@ -258,7 +257,7 @@ $(function(){
 
 		<br />
 		
-<?php if (@in_array('blog', $this->permission->sitePermissions)): ?>
+		<?php if ($this->flexi_auth->is_privileged('Allow Blog')): ?>
 
 		<h3>Most popular blog posts</h3>
 
@@ -274,9 +273,9 @@ $(function(){
 
 		<br />
 		
-<?php endif; ?>
+		<?php endif; ?>
 
-<?php if (@in_array('shop', $this->permission->sitePermissions)): ?>		
+		<?php if ($this->flexi_auth->is_privileged('Allow Shop')): ?>
 
 		<h3>Most popular shop products</h3>
 

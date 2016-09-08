@@ -158,7 +158,7 @@ class Halogy_model extends CI_Model {
 		$this->db->select('postTitle');
 		$this->db->where('deleted', 0);
 		$this->db->where('siteID', $this->siteID);
-		$this->db->order_by('dateCreated', 'desc');
+		$this->db->order_by('date_created', 'desc');
 
 		$query = $this->db->get('blog_posts', 1);
 
@@ -284,11 +284,11 @@ class Halogy_model extends CI_Model {
 	{
 		// default wheres
 		$this->db->where('siteID', $this->siteID);
-		$this->db->where('active', 1);	
+		$this->db->where('user_active', 1);	
 
 		$this->db->select('COUNT(*) as numUsers');
 			
-		$query = $this->db->get('users');
+		$query = $this->db->get('user_accounts');
 
 		if ($query->num_rows() > 0)
 		{
@@ -305,14 +305,14 @@ class Halogy_model extends CI_Model {
 	{
 		// default wheres
 		$this->db->where('siteID', $this->siteID);
-		$this->db->where('active', 1);
+		$this->db->where('user_active', 1);
 		
 		// when?
-		$this->db->where('dateCreated >=', date("Y-m-d 00:00:00", strtotime('today')));
+		$this->db->where('date_created >=', date("Y-m-d 00:00:00", strtotime('today')));
 
 		$this->db->select('COUNT(*) as numUsers');
 			
-		$query = $this->db->get('users');
+		$query = $this->db->get('user_accounts');
 
 		if ($query->num_rows() > 0)
 		{
@@ -329,15 +329,15 @@ class Halogy_model extends CI_Model {
 	{
 		// default wheres
 		$this->db->where('siteID', $this->siteID);
-		$this->db->where('active', 1);
+		$this->db->where('user_active', 1);
 		
 		// when?
-		$this->db->where('dateCreated >=', date("Y-m-d 00:00:00", strtotime('yesterday')));
-		$this->db->where('dateCreated <=', date("Y-m-d 00:00:00", strtotime('today')));		
+		$this->db->where('date_created >=', date("Y-m-d 00:00:00", strtotime('yesterday')));
+		$this->db->where('date_created <=', date("Y-m-d 00:00:00", strtotime('today')));		
 
 		$this->db->select('COUNT(*) as numUsers');
 			
-		$query = $this->db->get('users');
+		$query = $this->db->get('user_accounts');
 
 		if ($query->num_rows() > 0)
 		{
@@ -354,14 +354,14 @@ class Halogy_model extends CI_Model {
 	{
 		// default wheres
 		$this->db->where('siteID', $this->siteID);
-		$this->db->where('active', 1);
+		$this->db->where('user_active', 1);
 
 		// when?
-		$this->db->where('dateCreated >=', date("Y-m-d 00:00:00", strtotime('-1 week sun')));
+		$this->db->where('date_created >=', date("Y-m-d 00:00:00", strtotime('-1 week sun')));
 
 		$this->db->select('COUNT(*) as numUsers');
 			
-		$query = $this->db->get('users');
+		$query = $this->db->get('user_accounts');
 
 		if ($query->num_rows() > 0)
 		{
@@ -378,15 +378,15 @@ class Halogy_model extends CI_Model {
 	{
 		// default wheres
 		$this->db->where('siteID', $this->siteID);
-		$this->db->where('active', 1);
+		$this->db->where('user_active', 1);
 
 		// when?
-		$this->db->where('dateCreated >=', date("Y-m-d 00:00:00", strtotime('-2 week sun')));
-		$this->db->where('dateCreated <=', date("Y-m-d 00:00:00", strtotime('-1 week sun')));
+		$this->db->where('date_created >=', date("Y-m-d 00:00:00", strtotime('-2 week sun')));
+		$this->db->where('date_created <=', date("Y-m-d 00:00:00", strtotime('-1 week sun')));
 
 		$this->db->select('COUNT(*) as numUsers');
 			
-		$query = $this->db->get('users');
+		$query = $this->db->get('user_accounts');
 
 		if ($query->num_rows() > 0)
 		{
