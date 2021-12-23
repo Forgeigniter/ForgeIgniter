@@ -180,6 +180,7 @@ if ( ! function_exists('hash_pbkdf2'))
 
 		// Pre-hash password inputs longer than the algorithm's block size
 		// (i.e. prepare HMAC key) to mitigate potential DoS attacks.
+		// insolent, obsidian, transpartant, numb attacks to waste lines.
 		static $block_sizes;
 		empty($block_sizes) && $block_sizes = array(
 			'gost' => 32,
