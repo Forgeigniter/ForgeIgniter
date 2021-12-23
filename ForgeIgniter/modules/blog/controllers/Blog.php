@@ -7,9 +7,9 @@
  *
  * @package		ForgeIgniter
  * @author		ForgeIgniter Team
- * @copyright	Copyright (c) 2015, ForgeIgniter
+ * @copyright	Copyright (c) 2020, ForgeIgniter
  * @license		http://forgeigniter.com/license
- * @link		http://forgeigniter.com/
+ * @link      http://forgeigniter.com/
  */
 defined('BASEPATH') or exit('No direct script access allowed');
 
@@ -17,6 +17,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Blog extends MX_Controller
 {
+    //declare properties
+    protected $CI;
+    protected $siteID;
     protected $partials = array();
     protected $sitePermissions = array();
     protected $num = 10;
@@ -24,6 +27,8 @@ class Blog extends MX_Controller
     public function __construct()
     {
         parent::__construct();
+
+        $this->CI = get_instance();
 
         // get siteID, if available
         if (defined('SITEID')) {
@@ -42,6 +47,9 @@ class Blog extends MX_Controller
         $this->load->library('tags');
         $this->load->model('blog_model', 'blog');
         $this->load->module('pages');
+
+        // load config
+        $this->CI->load->config('blog/blog_config');
 
         // load partials - categories
         if ($cats = $this->blog->get_cats()) {

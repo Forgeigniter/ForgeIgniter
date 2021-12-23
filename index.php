@@ -13,11 +13,11 @@
  * @since		Hal Version 1.0
  * @filesource
  */
- 
+
 //Check if we need to start installer
-if(!file_exists("ForgeIgniter/config/database.php"))
+if(!file_exists("forgeigniter/config/database.php"))
 {
-	header("Location: ForgeIgniter/install/");
+	header("Location: forgeigniter/install/");
 	exit;
 }
 
@@ -85,7 +85,7 @@ switch (ENVIRONMENT)
 if(ini_get('date.timezone') == '' )
 {
    date_default_timezone_set('GMT');
-} 
+}
 
 /*
  *---------------------------------------------------------------
@@ -129,7 +129,7 @@ if(ini_get('date.timezone') == '' )
  * NO TRAILING SLASH!
  */
 	$view_folder = '';
-	
+
 /*
  * --------------------------------------------------------------------
  * DEFAULT CONTROLLER
