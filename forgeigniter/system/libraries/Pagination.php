@@ -73,10 +73,11 @@ class CI_Pagination {
 
 	/**
 	 * Total number of items
+	 * Temp Fix set to public (Cannot access protected property MY_Pagination::$total_rows)
 	 *
 	 * @var	int
 	 */
-	protected $total_rows = 0;
+	public $total_rows = 0;
 
 	/**
 	 * Number of links to show
